@@ -68,6 +68,7 @@ function dayLabel(s) { const d = new Date(s), n = new Date(), y = new Date(Date.
 const FCATS = ["Geral", "Leitura", "Kindle e e-readers", "Tecnologia", "Jogos", "Ajuda", "Bate-papo"];
 add("forum", "Fórum", "forum", "Comunidade", b => {
   const st = X("forum", { cat: "", sort: "ativos", q: "" }), seen = X("forumSeen", {}), top = h("div"), body = h("div"); let page = 0, timer = null;
+  if (["ativos", "novos", "populares"].indexOf(st.sort) < 0) st.sort = "ativos"; if (typeof st.q !== "string") st.q = "";
   b.append(whoBar(b), top, body);
   const ORD = { ativos: "last_at.desc", novos: "id.desc", populares: "replies.desc,last_at.desc" };
   const topicRow = r => { const isNew = !seen[r.id] || seen[r.id] < new Date(r.last_at).getTime();

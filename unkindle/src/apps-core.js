@@ -32,9 +32,9 @@ add("todo", "Tarefas", "todo", "Essenciais", function (b) {
 
 
 add("calc", "Calculadora", "calc", "Ferramentas", function (b) {
-  var d = h("input", { readonly: "readonly", style: "width:100%;text-align:right;font-size:1.5em" }), g = h("div", { "class": "g4", style: "max-width:340px" }), ex = "";
+  var d = h("input", { readonly: "readonly", style: "width:100%;text-align:right;font-size:1.5em" }), g = h("div", { "class": "g4", style: "max-width:420px" }), ex = "";
   "7 8 9 / 4 5 6 * 1 2 3 - 0 . = +".split(" ").forEach(function (k) {
-    g.appendChild(h("button", { style: "height:58px;font-size:1.2em", onclick: function () {
+    g.appendChild(h("button", { style: "height:52px;font-size:1.2em", onclick: function () {
       if (k === "=") { try { if (!/^[0-9+\-*/. ]+$/.test(ex)) throw 0; ex = String(Function('"use strict";return(' + ex + ")")()); } catch (e) { ex = "Erro"; } } else { if (ex === "Erro") ex = ""; ex += k; }
       d.value = ex; } }, k));
   });

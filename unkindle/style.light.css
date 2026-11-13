@@ -632,3 +632,37 @@ table.naval td.miss{color:#4a4a4a}
 .wxbar{margin:0 0 6px;padding:10px 12px;border:1px solid #9a9a9a;border-radius:12px;-webkit-border-radius:12px;line-height:1.6}
 .wxbar small{color:#4a4a4a;font-size:.8em}
 .wxbar .sbtn{margin:6px 8px 0 0}
+
+/* Login enxuto */
+.auth .authnote{margin:12px 0 0;text-align:center;font-size:.8em;color:#4a4a4a}
+
+/* Kindle (até 600 px, ex.: 536x616): tudo mais compacto para caber mais na tela */
+@media (max-width:600px){
+  body{font-size:17px;padding-top:88px}
+  #top .tb{height:50px}
+  #page{margin-top:8px;margin-bottom:12px;padding:6px 12px 12px}
+  .v-home #page{margin-top:4px}
+  .appbar{padding:0}
+  #back,#modal-x{min-height:38px;padding:3px 12px 3px 8px;font-size:.82em}
+  #top .ib{width:36px;min-width:36px}
+  #app-title,#sheet-body>h2:first-child{margin:8px 0 10px;padding-bottom:8px;font-size:1.35em}
+  #app-title .ico{width:24px;height:24px}
+  h2{font-size:1.15em}
+  button{min-height:42px;padding:6px 14px;margin:0 6px 6px 0}
+  button.wide,.filebtn.wide{min-height:46px;margin-bottom:8px;font-size:.95em}
+  input[type=text],input[type=search],input[type=number],input[type=email],input[type=password],input[type=date],input[type=time],input[type=url],input[type=tel],input:not([type]),textarea,select{min-height:44px;padding:6px 12px;margin:0 6px 6px 0}
+  input:focus,textarea:focus,select:focus{padding:5px 11px}
+  .card{padding:12px}
+  .auth{margin:0}
+  .auth h2{margin:4px 0 2px;font-size:1.45em}
+  .auth .sub{margin:0 0 12px;font-size:.88em}
+  .fld{margin:0 0 10px}
+  .fld label{margin:0 0 4px;font-size:.7em}
+  .fld input{min-height:44px;font-size:1em}
+  .fld .hint{margin-top:2px}
+  .switch{margin:8px 0 0;font-size:.88em}
+  .auth .who{margin:0 0 10px}
+  .at span{left:13px;top:10px;font-size:1em}
+  .at input,.at input:focus{padding-left:34px}
+  .fld .lnk{min-height:0;margin-top:-2px;padding:0 2px}
+}

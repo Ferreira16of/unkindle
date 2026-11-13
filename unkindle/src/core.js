@@ -347,11 +347,10 @@ var pages = {}, pagesRaw = {
   },
   auth: function (m) {
     var reopen = function () { if (sheetFrom === "app" && current) reopenApp = true; closeModal(); };
-    var brand = function () { return h("div", { "class": "brand" }, "UN", h("b", {}, "KINDLE")); };
-    if (!remote) return modal(h("div", { "class": "auth" }, brand(), h("h2", {}, "Conta"), h("p", { "class": "sub" }, "Modo local: seus dados ficam neste aparelho. Para ativar login e sincronização, preencha o arquivo config.js com seu projeto Supabase.")));
+    if (!remote) return modal(h("div", { "class": "auth" }, h("h2", {}, "Conta"), h("p", { "class": "sub" }, "Modo local: seus dados ficam neste aparelho. Para ativar login e sincronização, preencha o arquivo config.js com seu projeto Supabase.")));
     if (session) {
       var stat = h("small", { "class": "muted" }, lastSync ? "Sincronizado às " + lastSync : "Sincronização automática ligada");
-      return modal(h("div", { "class": "auth" }, brand(), h("h2", {}, "Sua conta"), h("p", { "class": "sub" }, "Tudo o que você faz no Unkindle fica guardado aqui e aparece em qualquer aparelho em que você entrar."),
+      return modal(h("div", { "class": "auth" }, h("h2", {}, "Sua conta"), h("p", { "class": "sub" }, "Tudo fica salvo aqui e aparece em qualquer aparelho."),
         h("div", { "class": "who" }, h("b", {}, session.user.username ? "@" + session.user.username : session.user.email), session.user.username ? h("small", {}, session.user.email) : null, stat),
         session.user.username ? null : (function () {
           var u = h("input", { type: "text", id: "f-us", autocapitalize: "off", autocorrect: "off", placeholder: "seunome", maxlength: "20" }), em2 = h("div", { "class": "err" }); show(em2, false);
@@ -401,19 +400,15 @@ var pages = {}, pagesRaw = {
       var enter = function (e) { if (e.key === "Enter" || e.keyCode === 13) run(); };
       em.addEventListener("keydown", enter, false); us.addEventListener("keydown", enter, false); pw.addEventListener("keydown", enter, false);
       var eye = h("button", { "class": "lnk", onclick: function () { pw.type = pw.type === "password" ? "text" : "password"; eye.textContent = pw.type === "password" ? "Mostrar" : "Ocultar"; } }, "Mostrar");
-      box.replaceChildren(brand(),
-        h("h2", {}, up ? "Crie sua conta" : "Entre na sua conta"),
-        h("p", { "class": "sub" }, up ? "Grátis. Escolha seu @, e-mail e senha." : "Para ver seus favoritos, notas e arquivos em qualquer aparelho."),
+      box.replaceChildren(
+        h("h2", {}, up ? "Criar conta" : "Entrar"),
+        h("p", { "class": "sub" }, up ? "Grátis. Seus dados em qualquer aparelho." : "Seus favoritos, notas e arquivos em qualquer aparelho."),
         up ? h("div", { "class": "fld" }, h("label", { "for": "f-us" }, "Nome de usuário"), h("div", { "class": "at" }, h("span", {}, "@"), us), uh) : null,
         h("div", { "class": "fld" }, h("label", { "for": "f-em" }, "E-mail"), em),
         h("div", { "class": "fld" }, h("label", { "for": "f-pw" }, "Senha", eye), pw),
         msg, go,
-        h("p", { "class": "switch" }, up ? "Já tem conta?" : "Ainda não tem conta?", h("button", { "class": "lnk", onclick: function () { mode = up ? "in" : "up"; draw(); } }, up ? "Entrar" : "Criar conta grátis")),
-        h("ul", { "class": "perks" },
-          h("li", {}, ic("check", 20), "Favoritos, notas, tarefas e calendário em todos os aparelhos"),
-          h("li", {}, ic("check", 20), "Seus arquivos guardados na conta"),
-          h("li", {}, ic("check", 20), "Sem conta, tudo continua funcionando só neste aparelho")),
-        h("p", { style: "text-align:center;margin-top:14px" }, h("button", { "class": "lnk", onclick: closeModal }, "Continuar sem conta")));
+        h("p", { "class": "switch" }, up ? "Já tem conta?" : "Não tem conta?", h("button", { "class": "lnk", onclick: function () { mode = up ? "in" : "up"; draw(); } }, up ? "Entrar" : "Criar conta grátis")),
+        h("p", { "class": "authnote" }, "Sem conta, tudo funciona só neste aparelho."));
     };
     draw();
     modal(box);

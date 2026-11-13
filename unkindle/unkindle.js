@@ -1379,14 +1379,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           if (sheetFrom === "app" && current) reopenApp = true;
           closeModal();
         };
-        var brand = function brand() {
-          return h("div", {
-            "class": "brand"
-          }, "UN", h("b", {}, "KINDLE"));
-        };
         if (!remote) return modal(h("div", {
           "class": "auth"
-        }, brand(), h("h2", {}, "Conta"), h("p", {
+        }, h("h2", {}, "Conta"), h("p", {
           "class": "sub"
         }, "Modo local: seus dados ficam neste aparelho. Para ativar login e sincronização, preencha o arquivo config.js com seu projeto Supabase.")));
         if (session) {
@@ -1395,9 +1390,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           }, lastSync ? "Sincronizado às " + lastSync : "Sincronização automática ligada");
           return modal(h("div", {
             "class": "auth"
-          }, brand(), h("h2", {}, "Sua conta"), h("p", {
+          }, h("h2", {}, "Sua conta"), h("p", {
             "class": "sub"
-          }, "Tudo o que você faz no Unkindle fica guardado aqui e aparece em qualquer aparelho em que você entrar."), h("div", {
+          }, "Tudo fica salvo aqui e aparece em qualquer aparelho."), h("div", {
             "class": "who"
           }, h("b", {}, session.user.username ? "@" + session.user.username : session.user.email), session.user.username ? h("small", {}, session.user.email) : null, stat), session.user.username ? null : function () {
             var u = h("input", {
@@ -1565,9 +1560,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
               eye.textContent = pw.type === "password" ? "Mostrar" : "Ocultar";
             }
           }, "Mostrar");
-          box.replaceChildren(brand(), h("h2", {}, up ? "Crie sua conta" : "Entre na sua conta"), h("p", {
+          box.replaceChildren(h("h2", {}, up ? "Criar conta" : "Entrar"), h("p", {
             "class": "sub"
-          }, up ? "Grátis. Escolha seu @, e-mail e senha." : "Para ver seus favoritos, notas e arquivos em qualquer aparelho."), up ? h("div", {
+          }, up ? "Grátis. Seus dados em qualquer aparelho." : "Seus favoritos, notas e arquivos em qualquer aparelho."), up ? h("div", {
             "class": "fld"
           }, h("label", {
             "for": "f-us"
@@ -1583,20 +1578,15 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
             "for": "f-pw"
           }, "Senha", eye), pw), msg, go, h("p", {
             "class": "switch"
-          }, up ? "Já tem conta?" : "Ainda não tem conta?", h("button", {
+          }, up ? "Já tem conta?" : "Não tem conta?", h("button", {
             "class": "lnk",
             onclick: function onclick() {
               mode = up ? "in" : "up";
               _draw2();
             }
-          }, up ? "Entrar" : "Criar conta grátis")), h("ul", {
-            "class": "perks"
-          }, h("li", {}, ic("check", 20), "Favoritos, notas, tarefas e calendário em todos os aparelhos"), h("li", {}, ic("check", 20), "Seus arquivos guardados na conta"), h("li", {}, ic("check", 20), "Sem conta, tudo continua funcionando só neste aparelho")), h("p", {
-            style: "text-align:center;margin-top:14px"
-          }, h("button", {
-            "class": "lnk",
-            onclick: closeModal
-          }, "Continuar sem conta")));
+          }, up ? "Entrar" : "Criar conta grátis")), h("p", {
+            "class": "authnote"
+          }, "Sem conta, tudo funciona só neste aparelho."));
         };
         _draw2();
         modal(box);
@@ -2254,12 +2244,12 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }),
       g = h("div", {
         "class": "g4",
-        style: "max-width:340px"
+        style: "max-width:420px"
       }),
       ex = "";
     "7 8 9 / 4 5 6 * 1 2 3 - 0 . = +".split(" ").forEach(function (k) {
       g.appendChild(h("button", {
-        style: "height:58px;font-size:1.2em",
+        style: "height:52px;font-size:1.2em",
         onclick: function onclick() {
           if (k === "=") {
             try {
@@ -8226,6 +8216,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       body = h("div");
     var page = 0,
       timer = null;
+    if (["ativos", "novos", "populares"].indexOf(st.sort) < 0) st.sort = "ativos";
+    if (typeof st.q !== "string") st.q = "";
     b.append(whoBar(b), top, body);
     var ORD = {
       ativos: "last_at.desc",
