@@ -1,0 +1,5 @@
+tools/
+unkindle/src/
+unkindle/supabase.sql
+.claude/
+README.md

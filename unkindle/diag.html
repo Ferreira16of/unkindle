@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico Unkindle</title>
+<script src="report.js"></script>
+<style>
+body{font-family:Georgia,serif;font-size:18px;margin:12px;background:#fff;color:#000}
+table{border-collapse:collapse;width:100%}
+td{border:1px solid #000;padding:6px;font-size:15px;word-wrap:break-word}
+a{color:#000}
+</style>
+</head>
+<body>
+<h2>Diagnóstico do aparelho</h2>
+<p>Esta página foi escrita em JavaScript antigo (ES3) de propósito, para abrir em qualquer Kindle. O resultado é enviado automaticamente ao servidor que hospeda o Unkindle. Se não chegar, tire uma foto desta tela.</p>
+<p id="st"></p>
+<table id="t"></table>
+<p><a href="index.html">Abrir o Unkindle</a></p>
+<script>
+(function () {
+  function yes(f) { try { return f() ? "Sim" : "Não"; } catch (e) { return "Não"; } }
+  var st = document.body.style, rows = [];
+  rows.push(["Navegador", navigator.userAgent]);
+  rows.push(["Tela (largura × altura)", window.innerWidth + " × " + window.innerHeight]);
+  rows.push(["Armazenamento local", yes(function () { localStorage.setItem("t", "1"); localStorage.removeItem("t"); return 1; })]);
+  rows.push(["Canvas", yes(function () { return document.createElement("canvas").getContext("2d"); })]);
+  rows.push(["SVG em linha", yes(function () { var s = document.createElement("span"); s.innerHTML = '<svg width="2" height="2"><rect width="2" height="2"/></svg>'; return s.firstChild && s.firstChild.namespaceURI === "http://www.w3.org/2000/svg"; })]);
+  rows.push(["Toque (touchstart)", yes(function () { return "ontouchstart" in window; })]);
+  rows.push(["XMLHttpRequest", yes(function () { return window.XMLHttpRequest; })]);
+  rows.push(["fetch", yes(function () { return window.fetch; })]);
+  rows.push(["Promise", yes(function () { return window.Promise; })]);
+  rows.push(["JavaScript moderno (ES6)", yes(function () { new Function("var f=(x)=>x;return f(1)"); return 1; })]);
+  rows.push(["Flexbox", yes(function () { return "flex" in st || "webkitFlex" in st; })]);
+  rows.push(["CSS Grid", yes(function () { return "grid" in st; })]);
+  rows.push(["Variáveis CSS", yes(function () { return window.CSS && CSS.supports && CSS.supports("color", "var(--a)"); })]);
+  var h = "";
+  for (var i = 0; i < rows.length; i++) h += "<tr><td>" + rows[i][0] + "</td><td>" + rows[i][1] + "</td></tr>";
+  document.getElementById("t").innerHTML = h;
+  var o = { tipo: "diag" };
+  for (var j = 0; j < rows.length; j++) o["d" + j + " " + rows[j][0]] = rows[j][1];
+  if (window.__ukReport) { window.__ukReport(o); document.getElementById("st").innerHTML = "<b>Diagnóstico enviado.</b>"; }
+})();
+</script>
+</body>
+</html>

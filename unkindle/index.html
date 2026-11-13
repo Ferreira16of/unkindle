@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Pragma" content="no-cache">
+<title>Unkindle</title>
+<script src="report.js?v=mwfgqk0k"></script>
+<meta name="description" content="Central de apps para e-readers: notícias, utilidades do Brasil e do mundo, leitura, jogos e muito mais.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,500&display=swap">
+<link id="css" rel="stylesheet" href="style.css?v=mwfgqk0k">
+<script>try { if (window.localStorage.getItem("unkindle.theme") === "light") document.getElementById("css").href = "style.light.css?v=mwfgqk0k"; } catch (e) {}</script>
+</head>
+<body>
+<div id="hdr">
+<div id="top">
+  <div class="tb tl"><a href="#" id="logo" class="logo">UN<b>KINDLE</b></a></div>
+  <div class="tb tc"><span id="clock">--:--</span></div>
+  <div class="tb tr"><button id="btn-set" class="ib" aria-label="Ajustes" title="Ajustes"><i data-ic="settings"></i></button><span id="auth-out"><button id="btn-signup" class="hb">Criar conta</button><button id="btn-login" class="hb solid">Entrar</button></span><button id="btn-auth" class="hb" aria-label="Conta" style="display:none"><i data-ic="user"></i><span id="auth-lbl" class="lbl"></span></button></div>
+</div>
+<div id="sub">
+  <div class="sl" id="date"></div>
+  <div class="sr" id="wx"><span id="wx-ic"></span><b id="wx-temp">--°</b><span id="weather-line">Clima…</span><span id="wx-place"></span></div>
+</div>
+<div id="note" style="display:none"></div>
+</div>
+
+<div id="tabs"></div>
+<div id="page">
+<noscript><p><b>O Unkindle precisa de JavaScript ligado no navegador.</b></p></noscript>
+
+<div id="view-home">
+  <div id="feat" class="feat"></div>
+
+  <div id="sec-recent" style="display:none">
+    <div class="sech"><h2>Recentes</h2><span class="tools"><button id="clear-recent" class="sbtn">Limpar</button></span></div>
+    <div id="g-recent"></div>
+  </div>
+  <div id="sec-fav" style="display:none">
+    <div class="sech"><h2>Favoritos</h2></div>
+    <div id="g-fav"></div>
+  </div>
+  <div id="sec-all">
+    <div class="sech"><h2 id="all-title">Todos os apps</h2><span class="tools"><button id="btn-find" class="sbtn" aria-label="Buscar"><i data-ic="search"></i></button><button id="btn-view" class="sbtn" aria-label="Mudar visualização"></button><button id="btn-edit" class="sbtn"><span id="edit-lbl">Editar</span></button></span></div>
+    <div id="searchrow" style="display:none"><span class="sic"><i data-ic="search"></i></span><input id="search" type="search" placeholder="Buscar entre 160+ apps" autocomplete="off" autocorrect="off" autocapitalize="off"></div>
+    <div id="edit-tip" class="tip" style="display:none">Modo editar: toque na estrela para favoritar e no olho para ocultar. Toque em <b>Concluir</b> quando terminar.</div>
+    <div id="g-all"></div>
+  </div>
+</div>
+
+<div id="view-app" style="display:none">
+  <div class="appbar"><button id="back"><i data-ic="back"></i> Início</button><button id="app-fav" class="ib" aria-label="Favoritar"></button></div>
+  <h1 id="app-title"></h1>
+  <div id="app-body" class="web"></div>
+</div>
+
+<div id="view-sheet" style="display:none">
+  <div class="appbar"><button id="modal-x"><i data-ic="back"></i> Voltar</button></div>
+  <div id="sheet-body"></div>
+</div>
+</div>
+
+<footer>
+  <p><a href="#" data-modal="settings">Ajustes</a> · <a href="#" data-modal="help">Ajuda</a> · <a href="#" data-modal="privacy">Privacidade</a> · <a href="#" data-modal="changelog">Novidades</a> · <a href="diag.html">Diagnóstico</a></p>
+</footer>
+
+<script src="config.js?v=mwfgqk0k"></script>
+<script src="unkindle.js?v=mwfgqk0k"></script>
+</body>
+</html>
