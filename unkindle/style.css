@@ -613,3 +613,16 @@ table.naval td.miss{color:#b8b8b8}
   #clock{font-size:1em}
   #top .tb{padding:0 8px}
 }
+
+/* Assistente IA */
+.aichat{margin:4px 0 12px}
+.aim{margin:0 0 12px;padding:10px 14px;border:1px solid #6a6a6a;border-radius:14px;-webkit-border-radius:14px;max-width:92%}
+.aim.me{margin-left:8%;border-color:#ffffff;border-bottom-right-radius:4px}
+.aim.ai{border-bottom-left-radius:4px}
+.aiw{font-size:.7em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#b8b8b8;margin-bottom:4px}
+.aim .bpage p{margin:0 0 8px}
+.aiempty{padding:6px 0}
+.aiempty .chips button{display:block;width:100%;text-align:left;margin:0 0 8px;border-radius:12px;-webkit-border-radius:12px;font-weight:500}
+.aibox{margin:6px 0 12px}
+.aisum{margin-top:8px}
+.aisum .bpage{padding:10px 14px;border-left:3px solid #ffffff}

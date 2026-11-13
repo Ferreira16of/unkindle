@@ -14,6 +14,7 @@ unkindle/          site publicado (HTML, CSS e o unkindle.js já compilado)
 api/               funções da Vercel
   fetch.js         leitor de páginas (Navegador, Notícias, Reddit, Biblioteca) com proteção anti-SSRF
   report.js        relatórios técnicos de erro (vão para os logs da Vercel)
+  ai.js            Assistente IA (Groq); só para quem está logado, com limite por pessoa
 tools/
   build.js         gera unkindle.js (ES5 + polyfills, roda até em Kindle antigo) e style.css / style.light.css
   serve.py         servidor local para testar na rede (inclui /__fetch e /__report)
@@ -40,3 +41,13 @@ O build confere que o JavaScript final é ES5 e que o CSS não usa recursos que 
 Importe o repositório na Vercel. Não há passo de build: a Vercel publica a pasta `unkindle/`
 (o `unkindle.js` compilado vai junto no repositório) e cria as funções da pasta `api/`.
 Depois de mudar algo em `unkindle/src`, rode `node tools/build.js` e faça commit do resultado.
+
+## IA (Groq)
+
+A chave da Groq **nunca** vai para o repositório nem para o site:
+
+- **Vercel:** Settings → Environment Variables → `GROQ_API_KEY` = sua chave (Production e Preview). Faça um novo deploy depois.
+- **Local:** crie o arquivo `.env.local` na raiz com `GROQ_API_KEY=...` (já está no `.gitignore`).
+
+O app chama `/__ai` no próprio site; só quem está logado no Unkindle consegue usar (o servidor confere o token do Supabase),
+com limite de 30 pedidos a cada 10 minutos por pessoa.

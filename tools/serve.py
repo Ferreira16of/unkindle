@@ -50,6 +50,82 @@ def fetch_url(req):
     raise last
 
 
+# ---- IA (Groq): a chave fica fora do repositório, em ../.env.local (GROQ_API_KEY=...) ou na variável de ambiente ----
+def _env_key():
+    k = os.environ.get("GROQ_API_KEY")
+    if k:
+        return k.strip()
+    f = os.path.join(HERE, "..", ".env.local")
+    if os.path.exists(f):
+        for line in open(f, encoding="utf-8"):
+            if line.startswith("GROQ_API_KEY="):
+                return line.split("=", 1)[1].strip()
+    return ""
+
+
+def _supabase_cfg():
+    import re
+    cfg = open(os.path.join(ROOT, "config.js"), encoding="utf-8").read()
+    return re.search(r'url:\s*"([^"]+)"', cfg).group(1), re.search(r'anonKey:\s*"([^"]+)"', cfg).group(1)
+
+
+AI_SYSTEM = ("Você é o assistente do Unkindle, um app para Kindle e e-readers. Responda sempre em português do Brasil, de forma clara e direta, "
+             "em parágrafos curtos e listas simples (a tela é de tinta eletrônica, sem cores). Evite tabelas e emojis. Se não souber, diga que não sabe.")
+AI_HITS = {}
+
+
+def _json_req(url, headers, body=None, timeout=40):
+    import ssl
+    data = json.dumps(body).encode() if body is not None else None
+    req = urllib.request.Request(url, data=data, headers=dict(headers, **({"Content-Type": "application/json"} if data else {})))
+    last = None
+    for ctx in _ssl_contexts():
+        try:
+            with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
+                return r.status, json.loads(r.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            try:
+                return e.code, json.loads(e.read().decode("utf-8"))
+            except Exception:
+                return e.code, {}
+        except urllib.error.URLError as e:
+            last = e
+            if not isinstance(getattr(e, "reason", None), ssl.SSLCertVerificationError):
+                raise
+    raise last
+
+
+def ai_answer(token, payload):
+    key = _env_key()
+    if not key:
+        return 503, {"error": "A IA ainda não foi configurada (falta GROQ_API_KEY)."}
+    url, pub = _supabase_cfg()
+    code, user = _json_req(url + "/auth/v1/user", {"apikey": pub, "Authorization": "Bearer " + token, "User-Agent": "unkindle"}, timeout=8) if token else (401, {})
+    if code != 200 or not user.get("id"):
+        return 401, {"error": "Entre na sua conta do Unkindle para usar a IA."}
+    now = time.time()
+    arr = [t for t in AI_HITS.get(user["id"], []) if now - t < 600]
+    if len(arr) >= 30:
+        return 429, {"error": "Muitas perguntas seguidas. Espere alguns minutos e tente de novo."}
+    AI_HITS[user["id"]] = arr + [now]
+    msgs = [m for m in (payload or {}).get("messages", []) if isinstance(m, dict) and m.get("role") in ("user", "assistant") and isinstance(m.get("content"), str) and m["content"].strip()][-20:]
+    msgs = [{"role": m["role"], "content": m["content"][:8000]} for m in msgs]
+    if not msgs or msgs[-1]["role"] != "user":
+        return 400, {"error": "Mensagem vazia."}
+    for model in ("openai/gpt-oss-120b", "openai/gpt-oss-20b"):
+        try:
+            code, j = _json_req("https://api.groq.com/openai/v1/chat/completions", {"Authorization": "Bearer " + key, "User-Agent": "unkindle"},
+                                {"model": model, "messages": [{"role": "system", "content": AI_SYSTEM}] + msgs, "max_completion_tokens": 900, "temperature": 0.6, "reasoning_effort": "low", "include_reasoning": False})
+        except Exception:
+            continue
+        if code == 429 or code >= 500:
+            continue
+        if code != 200:
+            return 502, {"error": "A IA recusou o pedido."}
+        return 200, {"text": (j["choices"][0]["message"].get("content") or "").strip(), "model": model}
+    return 503, {"error": "A IA está ocupada agora. Tente de novo em instantes."}
+
+
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=ROOT, **kw)
@@ -100,6 +176,21 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def do_POST(self):
+        if self.path.split("?")[0] == "/__ai":
+            n = min(int(self.headers.get("Content-Length") or 0), 200 * 1024)
+            try:
+                payload = json.loads(self.rfile.read(n).decode("utf-8") or "{}")
+            except ValueError:
+                payload = {}
+            token = (self.headers.get("Authorization") or "").replace("Bearer ", "").strip()
+            code, out = ai_answer(token, payload)
+            body = json.dumps(out, ensure_ascii=False).encode("utf-8")
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
         if self.path.split("?")[0] != "/__report":
             self.send_error(404)
             return

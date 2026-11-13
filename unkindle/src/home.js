@@ -35,7 +35,7 @@ function byName(a, b) { var x = plain(a.n), y = plain(b.n); return x < y ? -1 : 
 /* Abas: "home" (destaques, recentes, favoritos e todos os apps), "all" (todas as categorias em seções) ou o nome de uma categoria */
 var tab = "home", finding = false;
 var FEAT = [["news", "G1, Agência Brasil, BBC e mais"], ["weather", "Previsão para a sua cidade"], ["calendar", "Seus compromissos do mês"],
-  ["files", "Guardados na sua conta"], ["notes", "Escreva e leve para todo lado"], ["wiki", "Leia qualquer artigo aqui mesmo"]];
+  ["ai", "Pergunte, resuma e traduza"], ["notes", "Escreva e leve para todo lado"], ["wiki", "Leia qualquer artigo aqui mesmo"]];
 function catOrder() {
   var order = CATS.slice(), known = {};
   order.forEach(function (c) { known[c[0]] = 1; });

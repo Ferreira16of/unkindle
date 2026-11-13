@@ -1,5 +1,6 @@
 /* Ícones de traço (24x24), cantos retos e bordas levemente "duras": legíveis no e-ink, com um toque retrô. */
 var ICONS = {
+  spark: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 2.5v4M17 4.5h4M5 16.5v4M3 18.5h4"/>',
   cards: '<rect x="2.5" y="6" width="12" height="16" rx="1.5"/><path d="M7.5 3.5l.5-.5h11.5a1.5 1.5 0 0 1 1.5 1.5V18l-1 1"/><path d="M8.5 10.5l-2.5 3a1.6 1.6 0 0 0 2.5 2l-.6 2h1.2l-.6-2a1.6 1.6 0 0 0 2.5-2z"/>',
   notes: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',
   todo: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="m8 12 3 3 5-6"/>',

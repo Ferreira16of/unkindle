@@ -68,7 +68,7 @@ add("news", "Notícias", "list", "Notícias", b => {
       const text = h("div", { class: "art" });
       const first = it.html ? txt(it.html).replace(/\s+/g, " ").trim() : (it.txt || "");
       text.replaceChildren(first ? h("p", { class: "rp" }, first) : null, note("Carregando a matéria completa…"));
-      body.replaceChildren(h("div", { class: "kick2" }, srcName + " · " + when(it.d)), h("h2", { class: "ah" }, it.t), it.img ? h("img", { class: "aimg", src: it.img, alt: "" }) : null, text, h("p", { class: "muted" }, "Fonte: " + host(it.u)));
+      body.replaceChildren(h("div", { class: "kick2" }, srcName + " · " + when(it.d)), h("h2", { class: "ah" }, it.t), aiSummaryBtn(() => text.textContent, "esta notícia"), it.img ? h("img", { class: "aimg", src: it.img, alt: "" }) : null, text, h("p", { class: "muted" }, "Fonte: " + host(it.u)));
       window.scrollTo(0, 0);
       if (it.u) fetchPage(it.u).then(html => { const a = extractArticle(html); if (a.paras.length >= 2) text.replaceChildren(...readerNodes(a.paras)); else text.lastChild && text.removeChild(text.lastChild); },
         () => { if (text.lastChild) text.replaceChild(note("Não foi possível carregar o texto completo agora. Acima, o resumo da matéria."), text.lastChild); });
@@ -95,7 +95,7 @@ add("wiki", "Wikipédia", "wiki", "Cultura", b => {
   const open = title => subView(b, () => {
     top.replaceChildren(h("button", { class: "sbtn", onclick: () => history.back() }, ic("back", 16), " Wikipédia"));
     body.replaceChildren(note("Abrindo “" + title + "”…")); window.scrollTo(0, 0);
-    wpArticle(title).then(a => body.replaceChildren(h("h2", { class: "ah" }, a.title), a.img ? h("img", { class: "aimg", src: a.img, alt: "" }) : null, h("div", { class: "art" }, ...readerNodes(a.paras)), note("Texto da Wikipédia, licença CC BY-SA.")),
+    wpArticle(title).then(a => body.replaceChildren(h("h2", { class: "ah" }, a.title), aiSummaryBtn(() => a.paras.map(p => p.t).join(" "), "este artigo da Wikipédia"), a.img ? h("img", { class: "aimg", src: a.img, alt: "" }) : null, h("div", { class: "art" }, ...readerNodes(a.paras)), note("Texto da Wikipédia, licença CC BY-SA.")),
       e => body.replaceChildren(para(e.userMsg || NOCONN)));
   }, draw);
   const items = arr => h("ul", { class: "list" }, ...arr.map(x => h("li", { class: "nw", onclick: () => x.p && open(x.p) }, x.img ? h("span", { class: "nthumb" }, h("img", { src: x.img, alt: "" })) : null, h("span", {}, h("b", {}, x.t), x.s ? h("small", {}, x.s) : null))));

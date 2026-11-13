@@ -375,6 +375,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
   }
   ;
   var ICONS = {
+    spark: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 2.5v4M17 4.5h4M5 16.5v4M3 18.5h4"/>',
     cards: '<rect x="2.5" y="6" width="12" height="16" rx="1.5"/><path d="M7.5 3.5l.5-.5h11.5a1.5 1.5 0 0 1 1.5 1.5V18l-1 1"/><path d="M8.5 10.5l-2.5 3a1.6 1.6 0 0 0 2.5 2l-.6 2h1.2l-.6-2a1.6 1.6 0 0 0 2.5-2z"/>',
     notes: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',
     todo: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="m8 12 3 3 5-6"/>',
@@ -1195,7 +1196,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         }, "Diagnóstico do aparelho"));
       },
       privacy: function privacy() {
-        modal(h("h2", {}, "Privacidade"), h("p", {}, "Não vendemos nem compartilhamos seus dados. Sem conta, tudo fica no seu navegador. Com conta, seus dados e arquivos ficam salvos na sua conta, protegidos por regras que só permitem acesso ao próprio dono."), h("p", {}, "Os apps online consultam serviços públicos (BrasilAPI, IBGE, ViaCEP, Wikipédia, Open-Meteo, GitHub e outros). Ao usar um deles, o que você digitou na busca é enviado a esse serviço, e seu IP aparece para ele. O clima da tela inicial consulta serviços de localização por IP."), h("p", {}, "Relatórios técnicos: quando algo falha, a página envia ao próprio servidor que a hospeda o erro, o modelo do navegador e o tamanho da tela, para eu corrigir. Nada do que você digita é enviado."));
+        modal(h("h2", {}, "Privacidade"), h("p", {}, "Não vendemos nem compartilhamos seus dados. Sem conta, tudo fica no seu navegador. Com conta, seus dados e arquivos ficam salvos na sua conta, protegidos por regras que só permitem acesso ao próprio dono."), h("p", {}, "Os apps online consultam serviços públicos (BrasilAPI, IBGE, ViaCEP, Wikipédia, Open-Meteo, GitHub e outros). Ao usar um deles, o que você digitou na busca é enviado a esse serviço, e seu IP aparece para ele. O clima da tela inicial consulta serviços de localização por IP."), h("p", {}, "Relatórios técnicos: quando algo falha, a página envia ao próprio servidor que a hospeda o erro, o modelo do navegador e o tamanho da tela, para eu corrigir. Nada do que você digita é enviado."), h("p", {}, "Assistente IA: o que você escreve no Assistente (ou o texto que pede para resumir) é enviado ao nosso servidor e processado pela Groq para gerar a resposta. A conversa fica salva na sua conta. Não envie dados pessoais."));
       },
       changelog: function changelog() {
         modal(h("h2", {}, "Novidades"), h("p", {}, "v0.7 – Visual retrô em pixels, cabeçalho fixo, voltar/avançar do navegador, Notícias e Wikipédia lidas aqui dentro, Dicionário PT/EN, Clima e CEP unificados, Galeria na conta, Dino, Untetris e Damas novos."), h("p", {}, "v0.6 – Apps com visual novo, Calendário refeito, Arquivos guardados na sua conta, novas telas de login e Ajustes."), h("p", {}, "v0.5 – Visual novo para e-ink: preto e branco puro, categorias com índice, grade ou lista, e a tela inicial volta para onde você estava."), h("p", {}, "v0.4 – Visual escuro novo e dezenas de apps online (notícias, Brasil, mundo, finanças e mais)."), h("p", {}, "v0.1 – Primeira versão."));
@@ -1706,7 +1707,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
   }
   var tab = "home",
     finding = false;
-  var FEAT = [["news", "G1, Agência Brasil, BBC e mais"], ["weather", "Previsão para a sua cidade"], ["calendar", "Seus compromissos do mês"], ["files", "Guardados na sua conta"], ["notes", "Escreva e leve para todo lado"], ["wiki", "Leia qualquer artigo aqui mesmo"]];
+  var FEAT = [["news", "G1, Agência Brasil, BBC e mais"], ["weather", "Previsão para a sua cidade"], ["calendar", "Seus compromissos do mês"], ["ai", "Pergunte, resuma e traduza"], ["notes", "Escreva e leve para todo lado"], ["wiki", "Leia qualquer artigo aqui mesmo"]];
   function catOrder() {
     var order = CATS.slice(),
       known = {};
@@ -5094,7 +5095,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           class: "kick2"
         }, srcName + " · " + when(it.d)), h("h2", {
           class: "ah"
-        }, it.t), it.img ? h("img", {
+        }, it.t), aiSummaryBtn(function () {
+          return text.textContent;
+        }, "esta notícia"), it.img ? h("img", {
           class: "aimg",
           src: it.img,
           alt: ""
@@ -5166,7 +5169,11 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         wpArticle(title).then(function (a) {
           return body.replaceChildren(h("h2", {
             class: "ah"
-          }, a.title), a.img ? h("img", {
+          }, a.title), aiSummaryBtn(function () {
+            return a.paras.map(function (p) {
+              return p.t;
+            }).join(" ");
+          }, "este artigo da Wikipédia"), a.img ? h("img", {
             class: "aimg",
             src: a.img,
             alt: ""
@@ -7066,7 +7073,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         var thin = p.body.textContent.replace(/\s+/g, " ").trim().length < 200;
         body.replaceChildren(h("h2", {
           class: "ah"
-        }, p.title), thin ? h("div", {
+        }, p.title), aiSummaryBtn(function () {
+          return p.body.textContent;
+        }, "esta página"), thin ? h("div", {
           class: "tip"
         }, "Este site depende de recursos que o modo leitura não executa. Mostrando o que deu para aproveitar.") : null, p.body);
       }, function () {
@@ -11368,6 +11377,178 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       class: "muted"
     }, "× = acerto, • = água. No difícil o computador atira de forma estratégica."));
     reset();
+  });
+  ;
+  function aiAsk(messages) {
+    if (!session) return Promise.reject(userErr("Entre na sua conta para usar a IA."));
+    return ensureToken().then(function () {
+      return new Promise(function (ok, no) {
+        var x = new XMLHttpRequest();
+        x.open("POST", "/__ai", true);
+        x.setRequestHeader("Content-Type", "application/json");
+        x.setRequestHeader("Authorization", "Bearer " + session.access_token);
+        x.timeout = 60000;
+        x.onload = function () {
+          var j = null;
+          try {
+            j = JSON.parse(x.responseText);
+          } catch (e) {}
+          if (x.status === 200 && j && j.text) ok(j.text);else no(userErr(j && j.error || "A IA não respondeu agora. Tente de novo."));
+        };
+        x.onerror = function () {
+          return no(userErr("Sem conexão com o servidor da IA."));
+        };
+        x.ontimeout = function () {
+          return no(userErr("A IA demorou demais. Tente de novo."));
+        };
+        x.send(JSON.stringify({
+          messages: messages
+        }));
+      });
+    });
+  }
+  function aiSummaryBtn(getText, what) {
+    var out = h("div", {
+        class: "aisum"
+      }),
+      b0 = btn("Resumir com IA", function () {
+        if (!session) {
+          toast("Entre na sua conta para usar a IA");
+          return pages.auth("in");
+        }
+        var t = String(getText() || "").replace(/\s+/g, " ").trim().slice(0, 9000);
+        if (t.length < 80) return toast("Texto curto demais para resumir");
+        b0.disabled = true;
+        out.replaceChildren(note("Resumindo…"));
+        aiAsk([{
+          role: "user",
+          content: "Resuma " + (what || "este texto") + " em até 5 tópicos curtos e uma frase final com a ideia principal:\n\n" + t
+        }]).then(function (r) {
+          out.replaceChildren(h("div", {
+            class: "lbl2"
+          }, "Resumo da IA"), h.apply(void 0, ["div", {
+            class: "bpage md"
+          }].concat(_toConsumableArray(mdNodes(r, location.href, function () {})))));
+        }, function (e) {
+          return out.replaceChildren(para(e.userMsg || NOCONN));
+        }).then(function () {
+          b0.disabled = false;
+        });
+      }, "sbtn");
+    return h("div", {
+      class: "aibox"
+    }, b0, out);
+  }
+  var SUGEST = ["Me indique 3 livros parecidos com Dom Casmurro", "Explique o que é inflação como se eu tivesse 10 anos", "Escreva um poema curto sobre a chuva", "Me ajude a montar uma rotina de leitura de 20 minutos por dia", "Traduza para o inglês: bom dia, tudo bem?", "Me conte uma curiosidade sobre o espaço"];
+  add("ai", "Assistente IA", "spark", "Essenciais", function (b) {
+    var st = X("aichat", {
+        msgs: []
+      }),
+      body = h("div");
+    b.append(body);
+    if (!session) return body.append(h("div", {
+      class: "card",
+      style: "text-align:center"
+    }, h("div", {
+      style: "margin:4px 0 10px"
+    }, ic("spark", 40)), h("p", {}, h("b", {}, "Converse com a IA do Unkindle.")), h("p", {
+      class: "muted"
+    }, "Tire dúvidas, peça resumos, traduções, ideias e indicações de leitura. Entre na sua conta para usar."), btn("Entrar ou criar conta", function () {
+      return pages.auth("in");
+    }, "solid wide")));
+    var list = h("div", {
+        class: "aichat"
+      }),
+      ta = h("textarea", {
+        placeholder: "Pergunte qualquer coisa…",
+        style: "min-height:90px"
+      }),
+      m = h("p", {
+        class: "muted"
+      });
+    var busy = false;
+    var bubble = function bubble(x) {
+      return h("div", {
+        class: "aim " + (x.role === "user" ? "me" : "ai")
+      }, h("div", {
+        class: "aiw"
+      }, x.role === "user" ? "Você" : "IA"), x.role === "user" ? h("div", {
+        class: "rtx"
+      }, x.content) : h.apply(void 0, ["div", {
+        class: "bpage md"
+      }].concat(_toConsumableArray(mdNodes(x.content, location.href, function (u) {
+        S.x.browserOpen = u;
+        save();
+        openApp("browser");
+      })))));
+    };
+    var paint = function paint() {
+      list.replaceChildren.apply(list, _toConsumableArray(st.msgs.length ? st.msgs.map(bubble) : [h("div", {
+        class: "aiempty"
+      }, h("p", {}, "Sobre o que você quer conversar?"), h.apply(void 0, ["div", {
+        class: "chips"
+      }].concat(_toConsumableArray(SUGEST.map(function (s) {
+        return h("button", {
+          onclick: function onclick() {
+            ta.value = s;
+            send();
+          }
+        }, s);
+      })))))]));
+      if (busy) list.appendChild(h("div", {
+        class: "aim ai"
+      }, h("div", {
+        class: "aiw"
+      }, "IA"), note("Pensando…")));
+    };
+    var send = function send() {
+      var v = ta.value.trim();
+      if (!v || busy) return;
+      st.msgs.push({
+        role: "user",
+        content: v.slice(0, 4000)
+      });
+      st.msgs = st.msgs.slice(-40);
+      ta.value = "";
+      snapDrafts();
+      busy = true;
+      m.textContent = "";
+      save();
+      paint();
+      window.scrollTo(0, document.body.scrollHeight);
+      aiAsk(st.msgs.slice(-12)).then(function (t) {
+        st.msgs.push({
+          role: "assistant",
+          content: t
+        });
+        save();
+      }, function (e) {
+        m.textContent = e.userMsg || NOCONN;
+      }).then(function () {
+        busy = false;
+        paint();
+        var last = list.lastChild;
+        if (last && last.scrollIntoView) last.scrollIntoView();
+      });
+    };
+    ta.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        if (e.preventDefault) e.preventDefault();
+        send();
+      }
+    }, false);
+    body.append(list, ta, h("div", {
+      class: "row"
+    }, btn("Enviar", send, "solid"), btn("Nova conversa", function () {
+      if (!st.msgs.length || confirm("Apagar esta conversa?")) {
+        st.msgs = [];
+        save();
+        paint();
+      }
+    })), m, h("p", {
+      class: "muted"
+    }, "A IA pode errar. Não envie dados pessoais. As conversas ficam salvas na sua conta."));
+    paint();
   });
   ;
   function boot() {

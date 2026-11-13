@@ -72,7 +72,7 @@ add("browser", "Navegador", "wiki", "Ferramentas", b => {
       return; }
     const fav = marks.some(m => m.u === url);
     info.replaceChildren(h("span", { class: "muted" }, host(url)), h("button", { class: "sbtn", onclick: () => { const i = marks.findIndex(m => m.u === url); if (i >= 0) marks.splice(i, 1); else marks.unshift({ t: (body.querySelector("h2") || {}).textContent || host(url), u: url }); save(); show(url); } }, ic("star", 16, fav), fav ? " Salvo" : " Salvar"));
-    fetchPage(url).then(html => { const p = renderPage(html, url, u => open(u)); const thin = p.body.textContent.replace(/\s+/g, " ").trim().length < 200; body.replaceChildren(h("h2", { class: "ah" }, p.title), thin ? h("div", { class: "tip" }, "Este site depende de recursos que o modo leitura não executa. Mostrando o que deu para aproveitar.") : null, p.body); },
+    fetchPage(url).then(html => { const p = renderPage(html, url, u => open(u)); const thin = p.body.textContent.replace(/\s+/g, " ").trim().length < 200; body.replaceChildren(h("h2", { class: "ah" }, p.title), aiSummaryBtn(() => p.body.textContent, "esta página"), thin ? h("div", { class: "tip" }, "Este site depende de recursos que o modo leitura não executa. Mostrando o que deu para aproveitar.") : null, p.body); },
       () => body.replaceChildren(para("Não foi possível abrir esse site agora."), note("Verifique o endereço ou tente de novo em instantes.")));
   };
   const home = () => {
