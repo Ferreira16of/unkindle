@@ -574,3 +574,13 @@ table.t2048 td,table.ul td,table.mem td,table.slp td{border-radius:12px;-webkit-
 .about p{margin:0 0 8px;color:{{MUT}}}
 .about b{color:{{FG}}}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+/* Barra de rolagem fina e discreta, nas cores do tema */
+html{scrollbar-width:thin;scrollbar-color:{{RULE}} transparent}
+*{scrollbar-width:thin;scrollbar-color:{{RULE}} transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:{{RULE}};border:3px solid {{PAGE}};border-radius:10px;-webkit-border-radius:10px;min-height:40px}
+::-webkit-scrollbar-thumb:hover{background:{{MUT}}}
+::-webkit-scrollbar-corner{background:transparent}
+#page ::-webkit-scrollbar-thumb,.chatbox::-webkit-scrollbar-thumb{border-color:{{BG}}}
