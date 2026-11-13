@@ -450,7 +450,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     rows: '<path d="M3 5h18M3 12h18M3 19h18"/>',
     bsky: '<path d="M12 11C10 7 6.5 4 3.5 4 2.5 4 2 4.7 2 6c0 2 1 5 3.5 6C3 13 2.5 15 4 16.5c2 2 5 .5 8-4.5 3 5 6 6.5 8 4.5 1.5-1.5 1-3.5-1.5-4.5C21 11 22 8 22 6c0-1.3-.5-2-1.5-2-3 0-6.5 3-8.5 7z"/>',
     ball8: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="11.2" r="5.6"/><g stroke-width="1.4" stroke-linecap="round"><circle cx="12" cy="9.3" r="1.45"/><circle cx="12" cy="12.75" r="1.85"/></g>',
-    snake: '<path d="M15 4h3a3 3 0 0 1 0 6H8a3 3 0 0 0 0 6h8a3 3 0 0 1 0 6H6"/><path d="M15 4h-2M6 22l-3-1.5M6 22l-3 1"/><circle cx="17.5" cy="6.5" r=".6"/>',
+    snake: '<path d="M5 20.5c-1.7 0-2.5-1-2.5-2.2 0-1.5 1.2-2.3 3-2.3h9a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h5"/><path d="M14 4h2.5c1.6 0 3-.9 3-1.5"/><circle cx="16.6" cy="3.2" r=".3" fill="currentColor"/><path d="M19.5 2.5l2 -.8M19.5 2.5l2 .8"/>',
     dino: '<path d="M11 21v-4H9l-4-4V9l2 2h4V6a3 3 0 0 1 3-3h4a2 2 0 0 1 2 2v3h-5v2h3v1.5h-3V15l-2 2v4"/><path d="M15 21v-3M15 5.5h1"/>',
     target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
     github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
@@ -2285,59 +2285,6 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     onClose(b, stop);
     show1();
   });
-  add("ttt", "Jogo da velha", "ttt", "Jogos", function (b) {
-    var bd = ["", "", "", "", "", "", "", "", ""],
-      turn = "X",
-      over = false,
-      st = h("p"),
-      g = h("div", {
-        "class": "g3",
-        style: "max-width:300px"
-      });
-    var W = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
-    var _draw6 = function draw() {
-      g.replaceChildren.apply(g, bd.map(function (c, i) {
-        return h("button", {
-          style: "height:96px;font-size:2.2em",
-          onclick: function onclick() {
-            if (c || over) return;
-            bd[i] = turn;
-            if (W.some(function (w) {
-              return w.every(function (k) {
-                return bd[k] === turn;
-              });
-            })) {
-              over = true;
-              st.textContent = turn + " venceu!";
-            } else if (bd.every(function (x) {
-              return x;
-            })) {
-              over = true;
-              st.textContent = "Empate.";
-            } else {
-              turn = turn === "X" ? "O" : "X";
-              st.textContent = "Vez de " + turn;
-            }
-            _draw6();
-          }
-        }, c);
-      }));
-    };
-    st.textContent = "Vez de X";
-    b.append(st, g, h("div", {
-      style: "height:8px"
-    }), h("button", {
-      "class": "solid",
-      onclick: function onclick() {
-        bd = ["", "", "", "", "", "", "", "", ""];
-        turn = "X";
-        over = false;
-        st.textContent = "Vez de X";
-        _draw6();
-      }
-    }, "Reiniciar"));
-    _draw6();
-  });
   add("guess", "Adivinhe o número", "guess", "Jogos", function (b) {
     var n = 1 + rnd(100),
       tries = 0,
@@ -2461,16 +2408,16 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       xIn.value = "";
       tIn.value = "";
       save();
-      _draw7();
+      _draw6();
     };
     xIn.addEventListener("keydown", function (e) {
       return e.key === "Enter" && addE();
     });
     var go = function go(n) {
       ym.setMonth(ym.getMonth() + n);
-      _draw7();
+      _draw6();
     };
-    var _draw7 = function draw() {
+    var _draw6 = function draw() {
       var y = ym.getFullYear(),
         m = ym.getMonth(),
         t0 = today();
@@ -2506,7 +2453,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
               if (d.getMonth() !== m) {
                 ym = new Date(d.getFullYear(), d.getMonth(), 1);
               }
-              _draw7();
+              _draw6();
             }
           }, h("span", {
             class: "n"
@@ -2536,7 +2483,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           sel = t0;
           ym = new Date();
           ym.setDate(1);
-          _draw7();
+          _draw6();
         }
       }, "Ir para hoje")), l.length ? h.apply(void 0, ["ul", {
         class: "list"
@@ -2549,7 +2496,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
             l.splice(i, 1);
             if (l.length) ev[sel] = l;else delete ev[sel];
             save();
-            _draw7();
+            _draw6();
           }
         }, ic("x", 20)));
       })))) : h("div", {
@@ -2573,7 +2520,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           onclick: function onclick() {
             sel = k;
             ym = new Date(d.getFullYear(), d.getMonth(), 1);
-            _draw7();
+            _draw6();
             window.scrollTo(0, 0);
           }
         }, h("span", {}, h("b", {}, k === t0 ? "Hoje" : SEM[d.getDay()].split("-")[0] + ", " + d.getDate() + "/" + pad2(d.getMonth() + 1)), h("small", {}, sortT(items(k)).map(function (x) {
@@ -2584,7 +2531,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }, "Nada marcado daqui para frente."));
     };
     b.append(nav, grid, dayBox, upBox);
-    _draw7();
+    _draw6();
   });
   add("decider", "Decisor", "shuffle", "Ferramentas", function (b) {
     var ta = h("textarea", {
@@ -2653,7 +2600,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     var fail = function fail(e) {
       st.textContent = /bucket not found|not found/i.test(e.message) && e.status !== 401 ? "O armazenamento de arquivos ainda não foi ativado no Supabase (rode o supabase.sql)." : "Erro: " + pt(e.message);
     };
-    var _draw8 = function draw() {
+    var _draw7 = function draw() {
       st.textContent = "Carregando…";
       filesList().then(function (all) {
         var tot = all.reduce(function (a, f) {
@@ -2672,7 +2619,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           }), h("button", {
             "aria-label": "Apagar",
             onclick: function onclick() {
-              if (confirm("Apagar " + f.name + " da sua conta?")) fileDel(f.name).then(_draw8, fail);
+              if (confirm("Apagar " + f.name + " da sua conta?")) fileDel(f.name).then(_draw7, fail);
             }
           }, ic("x", 20)));
         })))) : h("div", {
@@ -2690,7 +2637,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         if (i >= fs.length) {
           show(prog, false);
           toast("Enviado");
-          return _draw8();
+          return _draw7();
         }
         var f = fs[i++];
         st.textContent = "Enviando " + f.name + " (" + i + "/" + fs.length + ")…";
@@ -2712,7 +2659,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     }, "Guardados na sua conta (" + session.user.email + "). Abra em qualquer aparelho em que você entrar."), h("label", {
       class: "filebtn solid wide"
     }, ic("plus", 20), " Enviar arquivo", file), prog, st, list);
-    _draw8();
+    _draw7();
   });
   add("cards", "Flashcards", "card", "Estilo de vida", function (b) {
     var cards = X("cards", []),
@@ -3428,10 +3375,15 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       "class": "muted"
     }, t);
   }
+  function openInApp(url) {
+    S.x.browserOpen = url;
+    save();
+    openApp("browser");
+  }
   function openBtn(url, label) {
     return h("button", {
       onclick: function onclick() {
-        window.open(url, "_blank");
+        openInApp(url);
       }
     }, label || "Abrir", " ", ic("ext", 16));
   }
@@ -3459,7 +3411,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       return h("li", {}, h("span", {}, h("b", {}, it.t), it.s ? h("br") : null, it.s ? h("small", {}, it.s) : null), it.u ? h("button", {
         "aria-label": "Abrir",
         onclick: function onclick() {
-          window.open(it.u, "_blank");
+          openInApp(it.u);
         }
       }, ic("ext", 18)) : null);
     }));
@@ -4210,7 +4162,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     }, 40);
     b.append(h("p", {
       class: "muted"
-    }, "Toque na tela ou use espaço para pular."), c, info, btn("Pular", jump, "solid"));
+    }, "Toque na tela para pular."), c, info, btn("Pular", jump, "solid"));
   }
   function lanes(b, o) {
     var c = cv(240, 360),
@@ -4288,7 +4240,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     }, 40);
     b.append(h("p", {
       class: "muted"
-    }, "Toque na metade esquerda ou direita, ou use as setas."), c, info, dpad(mv));
+    }, "Toque na metade esquerda ou direita da pista, ou use os botões."), c, info, dpad(mv));
   }
   add("surf", "Surfista", "wind", "Jogos", function (b) {
     return lanes(b, {
@@ -4313,9 +4265,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       sel = [];
       found = [];
       lives = 4;
-      _draw9();
+      _draw8();
     };
-    var _draw9 = function draw() {
+    var _draw8 = function draw() {
       var done = found.flatMap(function (g) {
         return g.slice(1);
       });
@@ -4334,7 +4286,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
             sel = sel.includes(w) ? sel.filter(function (x) {
               return x !== w;
             }) : sel.length < 4 ? [].concat(_toConsumableArray(sel), [w]) : sel;
-            _draw9();
+            _draw8();
           }
         }, w);
       }))));
@@ -4349,7 +4301,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       });
       if (g && !found.includes(g)) found.push(g);else lives--;
       sel = [];
-      _draw9();
+      _draw8();
     };
     b.append(h("p", {
       class: "muted"
@@ -4782,7 +4734,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }
       g.fillRect(ap[0] * S2 + 4, ap[1] * S2 + 2, S2 - 8, S2 - 4);
       g.fillRect(ap[0] * S2 + 2, ap[1] * S2 + 4, S2 - 4, S2 - 8);
-      info.textContent = "Pontos: " + sc + (dead ? " · Fim! Aperte uma seta para reiniciar" : "");
+      info.textContent = "Pontos: " + sc + (dead ? " · Fim! Toque numa direção para recomeçar" : "");
     }, 150);
     b.append(c, info, dpad(mv));
   });
@@ -4856,9 +4808,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       });
       cur = null;
       msg.textContent = "";
-      _draw0();
+      _draw9();
     };
-    var _draw0 = function draw() {
+    var _draw9 = function draw() {
       return grid.replaceChildren.apply(grid, _toConsumableArray(pz.map(function (v, i) {
         var r = Math.floor(i / 9),
           c = i % 9;
@@ -4867,7 +4819,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           "aria-label": "Casa",
           onclick: function onclick() {
             cur = i;
-            _draw0();
+            _draw9();
           }
         }, v || "");
       })));
@@ -4875,7 +4827,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     var put = function put(n) {
         if (cur === null || fixed[cur]) return;
         pz[cur] = n;
-        _draw0();
+        _draw9();
         keepPut("sudoku", {
           sol: sol,
           pz: pz,
@@ -4912,7 +4864,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       sol = svS.sol;
       pz = svS.pz;
       fixed = svS.fixed;
-      _draw0();
+      _draw9();
     } else {
       gen();
       keepPut("sudoku", {
@@ -4930,9 +4882,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       qs = shuffle(Q).slice(0, 10);
       i = 0;
       sc = 0;
-      _draw1();
+      _draw0();
     };
-    var _draw1 = function draw() {
+    var _draw0 = function draw() {
       if (i >= qs.length) return out.replaceChildren(h("h3", {}, "Voc\xEA acertou ".concat(sc, " de ").concat(qs.length)), btn("Jogar de novo", start, "solid"));
       var _qs$i = _slicedToArray(qs[i], 3),
         q = _qs$i[0],
@@ -4947,7 +4899,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           if (k === a) sc++;
           toast(k === a ? "Certo!" : "Era: " + o[a]);
           i++;
-          _draw1();
+          _draw0();
         }));
       }))));
     };
@@ -4955,115 +4907,6 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     start();
   });
   ;
-  add("battleship", "Battleship", "flag", "Jogos para dois", function (b) {
-    var N = 7,
-      SH = [3, 2, 2];
-    var mine, theirs, shotsMe, shotsCpu, queue, over;
-    var A = h("div"),
-      Bd = h("div"),
-      msg = h("p");
-    var place = function place() {
-      var g = Array(N * N).fill(0);
-      SH.forEach(function (len) {
-        var _loop4 = function _loop4() {
-          var hz = rnd(2),
-            x = rnd(N - (hz ? len - 1 : 0)),
-            y = rnd(N - (hz ? 0 : len - 1)),
-            cs = _toConsumableArray(Array(len).keys()).map(function (k) {
-              return (y + (hz ? 0 : k)) * N + x + (hz ? k : 0);
-            });
-          if (cs.every(function (c) {
-            return !g[c];
-          })) {
-            cs.forEach(function (c) {
-              return g[c] = 1;
-            });
-            return 1;
-          }
-        };
-        for (;;) {
-          if (_loop4()) break;
-        }
-      });
-      return g;
-    };
-    var cell = function cell(g, shots, i, show, click) {
-      var s = shots[i],
-        isShip = g[i];
-      return h("button", {
-        style: "min-height:0;aspect-ratio:1;padding:0;font-weight:700;".concat(s && isShip ? "background:var(--fg);color:var(--bg)" : "").concat(!s && show && isShip ? "border-style:dashed;background:#ddd" : ""),
-        "aria-label": "Casa",
-        onclick: click
-      }, s ? isShip ? "X" : "·" : "");
-    };
-    var draw = function draw() {
-      var wrap = function wrap(t, g) {
-        return h("div", {
-          style: "flex:1;min-width:230px"
-        }, h("h3", {}, t), g);
-      };
-      A.replaceChildren(wrap("Seu mar", h.apply(void 0, ["div", {
-        style: "display:grid;grid-template-columns:repeat(".concat(N, ",1fr);gap:2px;max-width:260px")
-      }].concat(_toConsumableArray(mine.map(function (_, i) {
-        return cell(mine, shotsCpu, i, true, function () {});
-      }))))));
-      Bd.replaceChildren(wrap("Mar inimigo (toque para atirar)", h.apply(void 0, ["div", {
-        style: "display:grid;grid-template-columns:repeat(".concat(N, ",1fr);gap:2px;max-width:260px")
-      }].concat(_toConsumableArray(theirs.map(function (_, i) {
-        return cell(theirs, shotsMe, i, false, function () {
-          return fire(i);
-        });
-      }))))));
-    };
-    var done = function done(g, s) {
-      return g.every(function (v, i) {
-        return !v || s[i];
-      });
-    };
-    var fire = function fire(i) {
-      if (over || shotsMe[i]) return;
-      shotsMe[i] = 1;
-      if (done(theirs, shotsMe)) {
-        over = true;
-        msg.textContent = "Você afundou todos os navios!";
-        return draw();
-      }
-      var t;
-      while (queue.length && shotsCpu[t = queue.shift()]) t = undefined;
-      if (t === undefined) {
-        do t = rnd(N * N); while (shotsCpu[t]);
-      }
-      shotsCpu[t] = 1;
-      if (mine[t]) {
-        var r = Math.floor(t / N),
-          c = t % N;
-        [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].forEach(function (_ref0) {
-          var _ref1 = _slicedToArray(_ref0, 2),
-            a = _ref1[0],
-            d = _ref1[1];
-          return a >= 0 && a < N && d >= 0 && d < N && queue.push(a * N + d);
-        });
-      }
-      msg.textContent = done(mine, shotsCpu) ? "O computador afundou todos os seus navios." : "Sua vez.";
-      if (done(mine, shotsCpu)) over = true;
-      draw();
-    };
-    var reset = function reset() {
-      mine = place();
-      theirs = place();
-      shotsMe = Array(N * N).fill(0);
-      shotsCpu = Array(N * N).fill(0);
-      queue = [];
-      over = false;
-      msg.textContent = "Sua vez. Há 3 navios escondidos (tamanhos 3, 2 e 2).";
-      draw();
-    };
-    b.append(msg, h("div", {
-      class: "row",
-      style: "align-items:flex-start"
-    }, A, Bd), btn("Novo jogo", reset));
-    reset();
-  });
   ;
   function segTabs(opts, cur, onPick) {
     return h.apply(void 0, ["div", {
@@ -5550,11 +5393,11 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         return out.replaceChildren(para("Palavra não encontrada no dicionário de inglês."));
       });
     };
-    var _draw10 = function draw() {
+    var _draw1 = function draw() {
       return top.replaceChildren(segTabs([["pt", "Português"], ["en", "Inglês"]], st.lang, function (k) {
         st.lang = k;
         save();
-        _draw10();
+        _draw1();
         go();
       }));
     };
@@ -5564,7 +5407,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     b.append(top, h("div", {
       class: "row"
     }, q, btn("Buscar", go, "solid")), out);
-    _draw10();
+    _draw1();
     if (st.w) go();
   });
   var PAISES_ZIP = [["us", "Estados Unidos"], ["pt", "Portugal"], ["de", "Alemanha"], ["fr", "França"], ["es", "Espanha"], ["it", "Itália"], ["gb", "Reino Unido"], ["ca", "Canadá"], ["au", "Austrália"], ["mx", "México"], ["jp", "Japão"], ["nl", "Holanda"], ["ar", "Argentina"]];
@@ -5577,12 +5420,12 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       form = h("div"),
       out = h("div");
     b.append(top, form, out);
-    var _draw11 = function draw() {
+    var _draw10 = function draw() {
       top.replaceChildren(segTabs([["br", "Brasil"], ["ex", "Outro país"]], st.m, function (k) {
         st.m = k;
         save();
         out.replaceChildren();
-        _draw11();
+        _draw10();
       }));
       var z = inp(st.m === "br" ? "CEP, ex.: 01001-000" : "Código postal", "text");
       var sel = h.apply(void 0, ["select", {
@@ -5647,7 +5490,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         class: "row"
       }, z, btn("Buscar", go, "solid")));
     };
-    _draw11();
+    _draw10();
   });
   var uvTxt = function uvTxt(v) {
     return v == null ? "" : Math.round(v) + " · " + (v < 3 ? "baixo" : v < 6 ? "moderado" : v < 8 ? "alto — use protetor" : v < 11 ? "muito alto — evite o sol do meio-dia" : "extremo — evite o sol");
@@ -5907,16 +5750,46 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     dalmatian: "Dálmata",
     shiba: "Shiba"
   };
-  petApp("x_cao", "Cachorros", function () {
-    return api("https://dog.ceo/api/breeds/image/random").then(function (j) {
-      var m = /breeds\/([^/]+)\//.exec(j.message),
-        k = m ? m[1].split("-") : [""],
-        nm = RACAS[k[0]] || (k[0] ? k[0].charAt(0).toUpperCase() + k[0].slice(1) : "");
+  var dogNome = function dogNome(n) {
+    var k = String(n || "").toLowerCase().replace(/[^a-z]/g, "");
+    for (var r in RACAS) if (k.indexOf(r) >= 0) return RACAS[r];
+    return n ? String(n).charAt(0).toUpperCase() + String(n).slice(1) : "";
+  };
+  var dogSrc = [function () {
+    return api("https://api.thedogapi.com/v1/images/search?size=med&mime_types=jpg,png").then(function (j) {
+      var d = j[0];
+      if (!d || !d.url) throw 0;
       return {
-        img: j.message,
-        title: nm ? "Raça: " + nm + (k[1] && !RACAS[k[0]] ? " " + k[1] : "") : ""
+        img: d.url,
+        title: d.breeds && d.breeds[0] ? "Raça: " + dogNome(d.breeds[0].name) : ""
       };
     });
+  }, function () {
+    return api("https://dog.ceo/api/breeds/image/random").then(function (j) {
+      var m = /breeds\/([^/]+)\//.exec(j.message),
+        k = m ? m[1].split("-")[0] : "";
+      return {
+        img: j.message,
+        title: k ? "Raça: " + dogNome(k) : ""
+      };
+    });
+  }, function () {
+    return api("https://random.dog/woof.json?filter=mp4,webm,gif").then(function (j) {
+      if (!/\.(jpe?g|png)$/i.test(j.url) || j.fileSizeBytes > 3e6) throw 0;
+      return {
+        img: j.url,
+        title: ""
+      };
+    });
+  }];
+  var _dogAny = function dogAny() {
+    var i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    return i >= dogSrc.length ? Promise.reject(new Error("sem fonte")) : dogSrc[i]().catch(function () {
+      return _dogAny(i + 1);
+    });
+  };
+  petApp("x_cao", "Cachorros", function () {
+    return _dogAny();
   });
   var UNI = {
     Comprimento: {
@@ -5983,7 +5856,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     var top = h("div"),
       box = h("div");
     b.append(top, box);
-    var _draw12 = function draw() {
+    var _draw11 = function draw() {
       var U = UNI[st.cat];
       if (!U[st.a] || !U[st.z]) {
         var k = Object.keys(U);
@@ -5995,7 +5868,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }), st.cat, function (k) {
         st.cat = k;
         save();
-        _draw12();
+        _draw11();
       }));
       var opt = function opt(cur) {
         return Object.keys(U).map(function (k) {
@@ -6046,7 +5919,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           st.a = st.z;
           st.z = t;
           save();
-          _draw12();
+          _draw11();
         }
       }, ic("up", 16), ic("down", 16))), h("label", {}, "Para"), h("div", {
         class: "bar"
@@ -6055,7 +5928,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }, z))), sub, res);
       calc();
     };
-    _draw12();
+    _draw11();
   });
   var MNOME = {
     BRL: "Real",
@@ -6314,7 +6187,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         px(148, 60, 6, 6);
       }
     };
-    var _draw13 = function draw() {
+    var _draw12 = function draw() {
       var won = w.split("").every(function (ch) {
           return ch === "-" || got.indexOf(ch) >= 0;
         }),
@@ -6330,7 +6203,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           onclick: function onclick() {
             got.push(ch);
             if (w.indexOf(ch) < 0) err++;
-            _draw13();
+            _draw12();
           }
         }, ch.toUpperCase());
       })));
@@ -6347,7 +6220,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       w = pick(PALAVRAS[cat]);
       got = [];
       err = 0;
-      _draw13();
+      _draw12();
     };
     b.append(h("div", {
       class: "hang"
@@ -6358,7 +6231,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       cat = svF.cat;
       got = svF.got;
       err = svF.err;
-      _draw13();
+      _draw12();
     } else start();
   });
   var DINO = ["........######..", ".......##.#####.", ".......########.", ".......########.", ".......####.....", "#......######...", "#.....#####.....", "##...#######....", "###.########....", ".##########.....", "..########......", "...######.......", "....##.##.......", "....#...#.......", "....##..##......"];
@@ -6459,7 +6332,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       g.textAlign = "center";
       if (!started) g.fillText("TOQUE PARA COMEÇAR", W2 / 2, 90);
       if (dead) g.fillText("G A M E   O V E R", W2 / 2, 80);
-      info.textContent = dead ? "Toque na tela para jogar de novo" : "Toque na tela, espaço ou seta para cima para pular";
+      info.textContent = dead ? "Toque na tela para jogar de novo" : "Toque na tela ou no botão Pular para saltar os cactos";
     }, 33);
     b.append(c, info, btn("Pular", jump, "solid wide"));
   });
@@ -6487,18 +6360,18 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       paused,
       tick = 0;
     var fits = function fits(s, x, y) {
-      return s.every(function (_ref10) {
-        var _ref11 = _slicedToArray(_ref10, 2),
-          a = _ref11[0],
-          d = _ref11[1];
+      return s.every(function (_ref0) {
+        var _ref1 = _slicedToArray(_ref0, 2),
+          a = _ref1[0],
+          d = _ref1[1];
         return x + a >= 0 && x + a < W && y + d < H && (y + d < 0 || !bd[y + d][x + a]);
       });
     };
     var rot = function rot(s) {
-      var r = s.map(function (_ref12) {
-          var _ref13 = _slicedToArray(_ref12, 2),
-            a = _ref13[0],
-            d = _ref13[1];
+      var r = s.map(function (_ref10) {
+          var _ref11 = _slicedToArray(_ref10, 2),
+            a = _ref11[0],
+            d = _ref11[1];
           return [-d, a];
         }),
         mx = Math.min.apply(Math, _toConsumableArray(r.map(function (v) {
@@ -6507,10 +6380,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         my = Math.min.apply(Math, _toConsumableArray(r.map(function (v) {
           return v[1];
         })));
-      return r.map(function (_ref14) {
-        var _ref15 = _slicedToArray(_ref14, 2),
-          a = _ref15[0],
-          d = _ref15[1];
+      return r.map(function (_ref12) {
+        var _ref13 = _slicedToArray(_ref12, 2),
+          a = _ref13[0],
+          d = _ref13[1];
         return [a - mx, d - my];
       });
     };
@@ -6522,10 +6395,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       if (!fits(p, px, py + 1)) dead = true;
     };
     var lock = function lock() {
-      p.forEach(function (_ref16) {
-        var _ref17 = _slicedToArray(_ref16, 2),
-          a = _ref17[0],
-          d = _ref17[1];
+      p.forEach(function (_ref14) {
+        var _ref15 = _slicedToArray(_ref14, 2),
+          a = _ref15[0],
+          d = _ref15[1];
         if (py + d >= 0) bd[py + d][px + a] = 1;
       });
       var keep = bd.filter(function (r) {
@@ -6612,16 +6485,16 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       if (!dead) {
         var gy = py;
         while (fits(p, px, gy + 1)) gy++;
+        p.forEach(function (_ref16) {
+          var _ref17 = _slicedToArray(_ref16, 2),
+            a = _ref17[0],
+            d = _ref17[1];
+          return gy + d >= 0 && cell(g, (px + a) * S2, (gy + d) * S2, S2, true);
+        });
         p.forEach(function (_ref18) {
           var _ref19 = _slicedToArray(_ref18, 2),
             a = _ref19[0],
             d = _ref19[1];
-          return gy + d >= 0 && cell(g, (px + a) * S2, (gy + d) * S2, S2, true);
-        });
-        p.forEach(function (_ref20) {
-          var _ref21 = _slicedToArray(_ref20, 2),
-            a = _ref21[0],
-            d = _ref21[1];
           return py + d >= 0 && cell(g, (px + a) * S2, (py + d) * S2, S2);
         });
       }
@@ -6639,10 +6512,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       ng.fillStyle = "#fff";
       ng.fillRect(0, 0, 56, 56);
       ng.fillStyle = "#000";
-      nxt.forEach(function (_ref22) {
-        var _ref23 = _slicedToArray(_ref22, 2),
-          a = _ref23[0],
-          d = _ref23[1];
+      nxt.forEach(function (_ref20) {
+        var _ref21 = _slicedToArray(_ref20, 2),
+          a = _ref21[0],
+          d = _ref21[1];
         return cell(ng, a * 14, 14 + d * 14, 14);
       });
       if (!dead) keepPut("tetris", {
@@ -6736,7 +6609,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       class: "tpad"
     }, h("tbody", {}, h("tr", {}, h("td", {}, hold(ic("back", 32), "ArrowLeft")), h("td", {}, hold("GIRAR", "rot", "solid")), h("td", {}, hold(ic("fwd", 32), "ArrowRight"))), h("tr", {}, h("td", {}, hold("PAUSA", "pause")), h("td", {}, hold(ic("down", 32), "ArrowDown")), h("td", {}, hold("QUEDA", "drop"))))), h("p", {
       class: "muted"
-    }, "Toque nas laterais do tabuleiro para mover, no meio para girar, ou arraste para baixo para derrubar. No teclado: setas, espaço e P."));
+    }, "Use os botões grandes, ou toque nas laterais do tabuleiro para mover e no meio para girar. Arrastar para baixo derruba a peça."));
     var svT = keepGet("tetris");
     if (svT && svT.bd) {
       bd = svT.bd;
@@ -6749,201 +6622,6 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       lvl = svT.lvl;
       dead = false;
       paused = true;
-      draw();
-    } else reset();
-  });
-  add("checkers", "Damas", "grid", "Jogos para dois", function (b) {
-    var Z = 50,
-      c = cv(8 * Z, 8 * Z),
-      g = c.getContext("2d"),
-      msg = h("p", {
-        class: "score"
-      });
-    var bd, turn, sel, chain;
-    var reset = function reset() {
-      bd = Array(64).fill(null);
-      for (var i = 0; i < 64; i++) {
-        var r = Math.floor(i / 8),
-          cc = i % 8;
-        if ((r + cc) % 2) {
-          if (r < 3) bd[i] = {
-            p: 2,
-            k: false
-          };
-          if (r > 4) bd[i] = {
-            p: 1,
-            k: false
-          };
-        }
-      }
-      turn = 1;
-      sel = null;
-      chain = false;
-      draw();
-    };
-    var moves = function moves(i) {
-      var pc = bd[i],
-        r = Math.floor(i / 8),
-        cc = i % 8,
-        out = [],
-        dirs = pc.k ? [[-1, -1], [-1, 1], [1, -1], [1, 1]] : pc.p === 1 ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]],
-        caps = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
-      dirs.forEach(function (_ref24) {
-        var _ref25 = _slicedToArray(_ref24, 2),
-          dr = _ref25[0],
-          dc = _ref25[1];
-        var r1 = r + dr,
-          c1 = cc + dc;
-        if (r1 >= 0 && r1 < 8 && c1 >= 0 && c1 < 8 && !bd[r1 * 8 + c1]) out.push({
-          to: r1 * 8 + c1
-        });
-      });
-      caps.forEach(function (_ref26) {
-        var _ref27 = _slicedToArray(_ref26, 2),
-          dr = _ref27[0],
-          dc = _ref27[1];
-        var r1 = r + dr,
-          c1 = cc + dc,
-          r2 = r + 2 * dr,
-          c2 = cc + 2 * dc;
-        if (r2 < 0 || r2 > 7 || c2 < 0 || c2 > 7) return;
-        var t = bd[r1 * 8 + c1];
-        if (t && t.p !== pc.p && !bd[r2 * 8 + c2]) out.push({
-          to: r2 * 8 + c2,
-          cap: r1 * 8 + c1
-        });
-      });
-      return out;
-    };
-    var all = function all(p) {
-      var o = [];
-      bd.forEach(function (x, i) {
-        if (x && x.p === p) moves(i).forEach(function (m) {
-          return o.push(Object.assign({
-            from: i
-          }, m));
-        });
-      });
-      return o;
-    };
-    var legal = function legal(i) {
-      var a = all(turn),
-        mustCap = a.some(function (m) {
-          return m.cap !== undefined;
-        });
-      return a.filter(function (m) {
-        return m.from === i && (!mustCap || m.cap !== undefined) && (!chain || m.cap !== undefined);
-      });
-    };
-    var go = function go(m) {
-      bd[m.to] = bd[m.from];
-      bd[m.from] = null;
-      if (m.cap !== undefined) bd[m.cap] = null;
-      var r = Math.floor(m.to / 8);
-      var crowned = false;
-      if (!bd[m.to].k && (bd[m.to].p === 1 && r === 0 || bd[m.to].p === 2 && r === 7)) {
-        bd[m.to].k = true;
-        crowned = true;
-      }
-      if (m.cap !== undefined && !crowned && moves(m.to).some(function (x) {
-        return x.cap !== undefined;
-      })) {
-        sel = m.to;
-        chain = true;
-      } else {
-        turn = 3 - turn;
-        sel = null;
-        chain = false;
-      }
-      draw();
-    };
-    var click = function click(i) {
-      if (sel !== null) {
-        var m = legal(sel).find(function (x) {
-          return x.to === i;
-        });
-        if (m) return go(m);
-        if (chain) return;
-      }
-      if (bd[i] && bd[i].p === turn) {
-        if (legal(i).length) sel = i;else {
-          sel = null;
-          msg.textContent = all(turn).some(function (m) {
-            return m.cap !== undefined;
-          }) ? "Você precisa capturar com outra peça." : "Essa peça não pode se mover.";
-          return;
-        }
-      } else sel = null;
-      draw();
-    };
-    var draw = function draw() {
-      keepPut("damas", {
-        bd: bd,
-        turn: turn,
-        chain: chain,
-        sel: sel
-      });
-      var over = !all(turn).length;
-      msg.textContent = over ? "Jogador " + (3 - turn) + " venceu!" : "Vez das " + (turn === 1 ? "brancas" : "pretas") + (chain ? " — continue capturando" : all(turn).some(function (m) {
-        return m.cap !== undefined;
-      }) ? " — captura obrigatória" : "");
-      var hl = sel !== null ? legal(sel).map(function (m) {
-        return m.to;
-      }) : [];
-      for (var i = 0; i < 64; i++) {
-        var x = i % 8 * Z,
-          y = Math.floor(i / 8) * Z,
-          dark = (Math.floor(i / 8) + i % 8) % 2;
-        g.fillStyle = dark ? "#777" : "#fff";
-        g.fillRect(x, y, Z, Z);
-        if (i === sel) {
-          g.fillStyle = "#000";
-          g.fillRect(x, y, Z, 4);
-          g.fillRect(x, y + Z - 4, Z, 4);
-          g.fillRect(x, y, 4, Z);
-          g.fillRect(x + Z - 4, y, 4, Z);
-        }
-        if (hl.indexOf(i) >= 0) {
-          g.fillStyle = "#000";
-          g.fillRect(x + Z / 2 - 6, y + Z / 2 - 6, 12, 12);
-          g.fillStyle = "#fff";
-          g.fillRect(x + Z / 2 - 3, y + Z / 2 - 3, 6, 6);
-        }
-        var p = bd[i];
-        if (p) {
-          g.beginPath();
-          g.arc(x + Z / 2, y + Z / 2, Z * .36, 0, 7);
-          g.fillStyle = p.p === 1 ? "#fff" : "#000";
-          g.fill();
-          g.lineWidth = 3;
-          g.strokeStyle = p.p === 1 ? "#000" : "#fff";
-          g.stroke();
-          if (p.k) {
-            g.fillStyle = p.p === 1 ? "#000" : "#fff";
-            g.fillRect(x + 16, y + 22, 18, 8);
-            g.fillRect(x + 16, y + 16, 4, 6);
-            g.fillRect(x + 23, y + 14, 4, 8);
-            g.fillRect(x + 30, y + 16, 4, 6);
-          }
-        }
-      }
-      g.strokeStyle = "#000";
-      g.lineWidth = 2;
-      g.strokeRect(1, 1, 8 * Z - 2, 8 * Z - 2);
-    };
-    onPointer(c, function (e) {
-      var p = ptr(c, e);
-      click(Math.floor(p[1] / Z) * 8 + Math.floor(p[0] / Z));
-    });
-    b.append(h("p", {
-      class: "muted"
-    }, "Duas pessoas no mesmo aparelho. Toque numa peça e depois no quadradinho marcado. Captura é obrigatória; quem chega ao outro lado vira dama (coroa)."), msg, c, btn("Novo jogo", reset, "solid"));
-    var svD = keepGet("damas");
-    if (svD && svD.bd) {
-      bd = svD.bd;
-      turn = svD.turn;
-      chain = svD.chain;
-      sel = svD.sel;
       draw();
     } else reset();
   });
@@ -7008,7 +6686,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         });
       });
       var rows = [];
-      var _loop5 = function _loop5(r) {
+      var _loop4 = function _loop4(r) {
         rows.push(h.apply(void 0, ["tr", {}].concat(_toConsumableArray(Array.from({
           length: N
         }, function (_, cc) {
@@ -7022,7 +6700,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         })))));
       };
       for (var r = 0; r < N; r++) {
-        _loop5(r);
+        _loop4(r);
       }
       tbl.replaceChildren(h.apply(void 0, ["tbody", {}].concat(rows)));
       list.replaceChildren.apply(list, _toConsumableArray(ws.map(function (w) {
@@ -7457,10 +7135,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       });
     var g, start, moves;
     var press = function press(x, y) {
-      return [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (_ref28) {
-        var _ref29 = _slicedToArray(_ref28, 2),
-          dx = _ref29[0],
-          dy = _ref29[1];
+      return [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (_ref22) {
+        var _ref23 = _slicedToArray(_ref22, 2),
+          dx = _ref23[0],
+          dy = _ref23[1];
         var a = x + dx,
           c = y + dy;
         if (a >= 0 && a < N && c >= 0 && c < N) g[c * N + a] ^= 1;
@@ -7483,14 +7161,14 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       })) return _make();
       start = g.slice();
       moves = 0;
-      _draw14();
+      _draw13();
     };
-    var _draw14 = function draw() {
+    var _draw13 = function draw() {
       var on = g.filter(Boolean).length,
         won = !on;
       head.replaceChildren(h("div", {}, h("small", {}, "NÍVEL"), h("b", {}, String(st.lvl))), h("div", {}, h("small", {}, "JOGADAS"), h("b", {}, String(moves))), h("div", {}, h("small", {}, "ACESAS"), h("b", {}, String(on))), h("div", {}, h("small", {}, "RECORDE"), h("b", {}, st.best[st.lvl] != null ? String(st.best[st.lvl]) : "—")));
       var rows = [];
-      var _loop6 = function _loop6(y) {
+      var _loop5 = function _loop5(y) {
         rows.push(h.apply(void 0, ["tr", {}].concat(_toConsumableArray(Array.from({
           length: N
         }, function (_, x) {
@@ -7500,13 +7178,13 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
               if (won) return;
               press(x, y);
               moves++;
-              _draw14();
+              _draw13();
             }
           }, g[y * N + x] ? ic("bulb", 32, true) : "");
         })))));
       };
       for (var y = 0; y < N; y++) {
-        _loop6(y);
+        _loop5(y);
       }
       tbl.replaceChildren(h.apply(void 0, ["tbody", {}].concat(rows)));
       if (won) {
@@ -7521,7 +7199,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }, "solid") : btn("Recomeçar nível", function () {
         g = start.slice();
         moves = 0;
-        _draw14();
+        _draw13();
       }), st.lvl > 1 ? btn("Nível anterior", function () {
         st.lvl--;
         save();
@@ -7592,7 +7270,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }));
       head.replaceChildren(h("div", {}, h("small", {}, "PARES"), h("b", {}, pairs + "/" + total)), h("div", {}, h("small", {}, "JOGADAS"), h("b", {}, String(moves))), h("div", {}, h("small", {}, "TEMPO"), h("b", {}, secs() + "s")), h("div", {}, h("small", {}, "RECORDE"), h("b", {}, st.best[st.lv] ? st.best[st.lv] + " jog." : "—")));
       var rows = [];
-      var _loop7 = function _loop7(y) {
+      var _loop6 = function _loop6(y) {
         rows.push(h.apply(void 0, ["tr", {}].concat(_toConsumableArray(Array.from({
           length: w
         }, function (_, x) {
@@ -7609,7 +7287,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         })))));
       };
       for (var y = 0; y < hh; y++) {
-        _loop7(y);
+        _loop6(y);
       }
       tbl.replaceChildren(h.apply(void 0, ["tbody", {}].concat(rows)));
       keepPut("memoria", {
@@ -8161,18 +7839,18 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         return out.replaceChildren(para("Não consegui carregar um poema agora. Tente de novo."));
       });
     };
-    var _draw15 = function draw() {
+    var _draw14 = function draw() {
       return top.replaceChildren(segTabs([["", "Qualquer poeta"]].concat(POETAS.map(function (p) {
         return [p, p];
       })), st.a, function (k) {
         st.a = k;
         save();
-        _draw15();
+        _draw14();
         show();
       }));
     };
     b.append(top, out, btn("Outro poema", show, "solid wide"));
-    _draw15();
+    _draw14();
     show();
   });
   var PIADAS = ["Por que o livro de matemática ficou triste? Porque tinha muitos problemas.", "O que o zero disse para o oito? Que cinto bonito!", "Qual é o café mais perigoso do mundo? O ex-presso.", "Por que a planta não responde? Porque ela é muda.", "O que é um pontinho amarelo no céu? Um yellowcóptero.", "Qual é o animal mais antigo? A zebra, porque é em preto e branco.", "Por que o jacaré tirou o filho da escola? Porque ele réptil de ano.", "O que o tomate foi fazer no banco? Tirar extrato.", "Qual é o rei dos queijos? O reiqueijão.", "O que a vaca foi fazer no espaço? Visitar a via láctea.", "Por que o espantalho ganhou um prêmio? Porque era excelente no seu campo.", "O que o pato disse para a pata? Vem quá!", "Qual é a cidade brasileira que não tem táxi? Uberlândia.", "Por que a galinha atravessou a rua? Para chegar ao outro lado, ué.", "O que é que a impressora disse para a folha? Essa impressão é sua.", "Qual o doce preferido do átomo? Pé de moléculas.", "Por que o computador foi ao médico? Porque estava com vírus.", "O que o celular disse para o carregador? Você me completa.", "Qual é o peixe que caiu do décimo andar? Aaaaaaatum!", "Como o elétron atende o telefone? Próton!", "O que o mar disse para a praia? Nada, só deu uma onda.", "Por que a vassoura chegou atrasada? Porque varreu da memória.", "Qual é o contrário de volátil? Vem cá, sobrinho.", "O que um cromossomo disse para o outro? Cromossomos bonitos!", "Por que a aranha é o animal mais carente? Porque é um aracnídeo.", "Qual é o lugar mais frio da casa? O cantinho, porque fica a 90 graus.", "O que o advogado do frango foi fazer na delegacia? Soltar a franga.", "Por que o pinheiro não se perde na floresta? Porque ele tem uma pinha.", "Qual é a fruta que anda de trem? O kiwiiii.", "O que é um vegetariano que come carne? Um ex-vegetariano.", "Por que o fantasma não mente? Porque dá para ver através dele.", "O que o pão francês disse para o pão de forma? Fica fatiado aí.", "Qual é o animal que não vale mais nada? O javali.", "Como se chama o boi que entende de tecnologia? Boi-telecom.", "O que a xícara disse para o pires? Você é meu suporte.", "Por que o músico foi preso? Porque estava sempre de dó.", "Qual é o cúmulo da paciência? Esperar o sinal abrir num semáforo desenhado.", "O que o relógio de parede disse para o de pulso? Sai do meu pé!", "Por que a geladeira foi ao psicólogo? Estava muito fria com as pessoas.", "Qual o nome do peixe que tem conta no banco? O pix-e."];
@@ -8365,7 +8043,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         re = /(https?:\/\/[^\s]+)|(@[a-z0-9_.]{3,20})/gi;
       var last = 0,
         m;
-      var _loop8 = function _loop8() {
+      var _loop7 = function _loop7() {
         if (m.index > last) el.appendChild(document.createTextNode(src.slice(last, m.index)));
         if (m[1]) {
           var u = m[1];
@@ -8386,7 +8064,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         last = m.index + m[0].length;
       };
       while (m = re.exec(src)) {
-        _loop8();
+        _loop7();
       }
       if (last < src.length) el.appendChild(document.createTextNode(src.slice(last)));
       if (!line) el.appendChild(h("br"));
@@ -8543,10 +8221,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           })));
         };
         var _load = function load() {
-          return Promise.all([dbGet("unkindle_topics?id=eq." + id + "&select=*"), dbGet("unkindle_posts?topic_id=eq." + id + "&select=*&order=id.asc&limit=500")]).then(function (_ref30) {
-            var _ref31 = _slicedToArray(_ref30, 2),
-              t = _ref31[0],
-              ps = _ref31[1];
+          return Promise.all([dbGet("unkindle_topics?id=eq." + id + "&select=*"), dbGet("unkindle_posts?topic_id=eq." + id + "&select=*&order=id.asc&limit=500")]).then(function (_ref24) {
+            var _ref25 = _slicedToArray(_ref24, 2),
+              t = _ref25[0],
+              ps = _ref25[1];
             if (!t.length) return body.replaceChildren(para("Esse tópico não existe mais."));
             var T = t[0];
             seen[id] = Date.now();
@@ -9164,7 +8842,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     var d = new DOMParser().parseFromString(xml, "text/xml"),
       ents = d.getElementsByTagName("entry"),
       out = [];
-    var _loop9 = function _loop9() {
+    var _loop8 = function _loop8() {
       var e = ents[i],
         g = function g(n) {
           var x = e.getElementsByTagName(n)[0];
@@ -9187,7 +8865,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       });
     };
     for (var i = 0; i < ents.length; i++) {
-      _loop9();
+      _loop8();
     }
     return out;
   }
@@ -9305,7 +8983,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       var rest = t.replace(/<[^>]+>/g, "");
       var re = /(!?\[([^\]]*)\]\(([^)\s]+)[^)]*\))|(`[^`]+`)|(\*\*[^*]+\*\*|__[^_]+__)/;
       var m;
-      var _loop0 = function _loop0() {
+      var _loop9 = function _loop9() {
         if (m.index) frag.appendChild(document.createTextNode(rest.slice(0, m.index)));
         if (m[1] && m[1][0] === "!") frag.appendChild(h("img", {
           src: absUrl(m[3], base),
@@ -9326,7 +9004,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         rest = rest.slice(m.index + m[0].length);
       };
       while (m = re.exec(rest)) {
-        _loop0();
+        _loop9();
       }
       if (rest) frag.appendChild(document.createTextNode(rest));
       return frag;
@@ -9475,10 +9153,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         }, ic("back", 16), " Busca"));
         body.replaceChildren(note("Abrindo @" + login + "…"));
         window.scrollTo(0, 0);
-        Promise.all([api(GH + "/users/" + login), api(GH + "/users/" + login + "/repos?sort=updated&per_page=30")]).then(function (_ref32) {
-          var _ref33 = _slicedToArray(_ref32, 2),
-            u = _ref33[0],
-            rs = _ref33[1];
+        Promise.all([api(GH + "/users/" + login), api(GH + "/users/" + login + "/repos?sort=updated&per_page=30")]).then(function (_ref26) {
+          var _ref27 = _slicedToArray(_ref26, 2),
+            u = _ref27[0],
+            rs = _ref27[1];
           return body.replaceChildren(h("div", {
             class: "wxnow"
           }, h("span", {
@@ -9753,7 +9431,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     q.addEventListener("keydown", function (e) {
       return e.key === "Enter" && load(q.value.trim());
     });
-    var _draw16 = function draw() {
+    var _draw15 = function draw() {
       return top.replaceChildren(h("div", {
         class: "row"
       }, q, btn("Buscar", function () {
@@ -9761,18 +9439,18 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }, "solid")), segTabs([["BR", "Brasil"], ["PT", "Portugal"], ["", "Mundo"]], st.c, function (k) {
         st.c = k;
         save();
-        _draw16();
+        _draw15();
         load();
       }), segTabs(RGEN, st.tag, function (k) {
         st.tag = k;
         save();
-        _draw16();
+        _draw15();
         load();
       }));
     };
     b.append(player, top, body);
     _paintPlayer();
-    _draw16();
+    _draw15();
     load();
     b.append(note("A rádio continua tocando quando você sai do app. Use Parar para desligar."));
   });
@@ -10221,7 +9899,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }));
       head.replaceChildren(h("div", {}, h("small", {}, "JOGADAS"), h("b", {}, String(moves))), h("div", {}, h("small", {}, "TEMPO"), h("b", {}, secs() + "s")), h("div", {}, h("small", {}, "RECORDE"), h("b", {}, st.best[n] ? st.best[n] + " jog." : "—")));
       var rows = [];
-      var _loop1 = function _loop1(r) {
+      var _loop0 = function _loop0(r) {
         rows.push(h.apply(void 0, ["tr", {}].concat(_toConsumableArray(Array.from({
           length: n
         }, function (_, c) {
@@ -10236,7 +9914,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         })))));
       };
       for (var r = 0; r < n; r++) {
-        _loop1(r);
+        _loop0(r);
       }
       tbl.className = "slp n" + n;
       tbl.replaceChildren(h.apply(void 0, ["tbody", {}].concat(rows)));
@@ -10359,7 +10037,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           t: t
         }, x || {}));
       };
-    var _loop10 = function _loop10(i) {
+    var _loop1 = function _loop1(i) {
       var p = b[i];
       if (sideOf(p) !== me) return 1;
       var _RC3 = RC(i),
@@ -10401,10 +10079,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         }
       } else if (t === "N" || t === "K") {
         var offs = t === "N" ? [[1, 2], [2, 1], [-1, 2], [-2, 1], [1, -2], [2, -1], [-1, -2], [-2, -1]] : [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]];
-        offs.forEach(function (_ref34) {
-          var _ref35 = _slicedToArray(_ref34, 2),
-            dr = _ref35[0],
-            dc = _ref35[1];
+        offs.forEach(function (_ref28) {
+          var _ref29 = _slicedToArray(_ref28, 2),
+            dr = _ref29[0],
+            dc = _ref29[1];
           if (free(r + dr, c + dc) || foe(r + dr, c + dc)) add(i, (r + dr) * 8 + c + dc);
         });
         if (t === "K") {
@@ -10421,10 +10099,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         }
       } else {
         var dirs = t === "B" ? [[1, 1], [1, -1], [-1, 1], [-1, -1]] : t === "R" ? [[1, 0], [-1, 0], [0, 1], [0, -1]] : [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]];
-        dirs.forEach(function (_ref36) {
-          var _ref37 = _slicedToArray(_ref36, 2),
-            dr = _ref37[0],
-            dc = _ref37[1];
+        dirs.forEach(function (_ref30) {
+          var _ref31 = _slicedToArray(_ref30, 2),
+            dr = _ref31[0],
+            dc = _ref31[1];
           var rr = r + dr,
             cc = c + dc;
           while (rr >= 0 && rr < 8 && cc >= 0 && cc < 8) {
@@ -10440,7 +10118,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       }
     };
     for (var i = 0; i < 64; i++) {
-      if (_loop10(i)) continue;
+      if (_loop1(i)) continue;
     }
     return out;
   }
@@ -10568,7 +10246,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     var ms = legalMoves(s);
     if (!ms.length) return null;
     if (lvl === "facil" && Math.random() < .35) return pick(ms);
-    var depth = lvl === "facil" ? 1 : 2;
+    var depth = lvl === "facil" ? 1 : lvl === "dificil" ? 3 : 2;
     var best = null,
       bv = -Infinity;
     shuffle(ms).forEach(function (m) {
@@ -10611,7 +10289,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       thinking = false,
       promoWait = null;
     var sprite = function sprite(key, x, y, white) {
-      var fg = white ? "#fff" : "#000",
+      var fg = white ? "#fff" : "#111",
         ln = "#000",
         det = white ? "#000" : "#fff";
       g.save();
@@ -10619,114 +10297,199 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       g.scale(Z, Z);
       g.lineJoin = "round";
       g.lineCap = "round";
-      g.lineWidth = 2.6 / Z;
-      var poly = function poly(pts) {
+      g.lineWidth = 0.04;
+      var P = function P() {
+        g.fillStyle = fg;
+        g.fill();
+        g.strokeStyle = ln;
+        g.stroke();
+      };
+      var line = function line(pts, w) {
         g.beginPath();
         g.moveTo(pts[0], pts[1]);
         for (var i = 2; i < pts.length; i += 2) g.lineTo(pts[i], pts[i + 1]);
+        g.strokeStyle = det;
+        g.lineWidth = w || 0.03;
+        g.stroke();
+        g.lineWidth = 0.04;
+      };
+      var rr = function rr(x0, y0, w, h0, r) {
+        g.beginPath();
+        g.moveTo(x0 + r, y0);
+        g.lineTo(x0 + w - r, y0);
+        g.quadraticCurveTo(x0 + w, y0, x0 + w, y0 + r);
+        g.lineTo(x0 + w, y0 + h0 - r);
+        g.quadraticCurveTo(x0 + w, y0 + h0, x0 + w - r, y0 + h0);
+        g.lineTo(x0 + r, y0 + h0);
+        g.quadraticCurveTo(x0, y0 + h0, x0, y0 + h0 - r);
+        g.lineTo(x0, y0 + r);
+        g.quadraticCurveTo(x0, y0, x0 + r, y0);
         g.closePath();
       };
-      var paint = function paint() {
-        g.fillStyle = fg;
-        g.fill();
-        g.strokeStyle = ln;
-        g.stroke();
-      };
-      var base = function base() {
-        poly([.24, .86, .76, .86, .74, .78, .26, .78]);
-        paint();
+      var base = function base(w) {
+        w = w || .56;
+        rr(.5 - w / 2, .8, w, .09, .03);
+        P();
+        rr(.5 - w / 2 + .06, .74, w - .12, .07, .025);
+        P();
       };
       if (key === "P") {
         g.beginPath();
-        g.moveTo(.36, .78);
-        g.quadraticCurveTo(.38, .56, .45, .48);
-        g.lineTo(.55, .48);
-        g.quadraticCurveTo(.62, .56, .64, .78);
+        g.moveTo(.37, .75);
+        g.bezierCurveTo(.37, .62, .43, .55, .45, .47);
+        g.lineTo(.55, .47);
+        g.bezierCurveTo(.57, .55, .63, .62, .63, .75);
         g.closePath();
-        paint();
+        P();
         g.beginPath();
-        g.arc(.5, .35, .12, 0, Math.PI * 2);
-        paint();
-        base();
+        g.ellipse ? g.ellipse(.5, .46, .12, .035, 0, 0, Math.PI * 2) : g.arc(.5, .46, .1, 0, Math.PI * 2);
+        P();
+        g.beginPath();
+        g.arc(.5, .31, .115, 0, Math.PI * 2);
+        P();
+        base(.5);
       }
       if (key === "R") {
-        poly([.33, .78, .35, .42, .65, .42, .67, .78]);
-        paint();
-        poly([.27, .42, .27, .22, .36, .22, .36, .29, .45, .29, .45, .22, .55, .22, .55, .29, .64, .29, .64, .22, .73, .22, .73, .42]);
-        paint();
-        base();
         g.beginPath();
-        g.moveTo(.36, .5);
-        g.lineTo(.64, .5);
-        g.strokeStyle = det;
-        g.lineWidth = 1.6 / Z;
-        g.stroke();
+        g.moveTo(.36, .74);
+        g.lineTo(.38, .4);
+        g.lineTo(.62, .4);
+        g.lineTo(.64, .74);
+        g.closePath();
+        P();
+        rr(.31, .34, .38, .07, .015);
+        P();
+        g.beginPath();
+        g.moveTo(.3, .34);
+        g.lineTo(.3, .17);
+        g.lineTo(.38, .17);
+        g.lineTo(.38, .23);
+        g.lineTo(.46, .23);
+        g.lineTo(.46, .17);
+        g.lineTo(.54, .17);
+        g.lineTo(.54, .23);
+        g.lineTo(.62, .23);
+        g.lineTo(.62, .17);
+        g.lineTo(.7, .17);
+        g.lineTo(.7, .34);
+        g.closePath();
+        P();
+        line([.39, .47, .61, .47]);
+        line([.39, .66, .61, .66]);
+        base(.56);
       }
       if (key === "N") {
-        poly([.30, .78, .70, .78, .70, .62, .66, .44, .62, .3, .54, .2, .46, .16, .45, .23, .36, .27, .24, .42, .23, .5, .3, .55, .4, .48, .46, .5, .38, .64, .33, .72]);
-        paint();
-        base();
         g.beginPath();
-        g.arc(.43, .32, .025, 0, Math.PI * 2);
+        g.moveTo(.3, .74);
+        g.bezierCurveTo(.3, .6, .36, .52, .4, .46);
+        g.bezierCurveTo(.33, .46, .25, .5, .22, .45);
+        g.bezierCurveTo(.19, .4, .24, .34, .3, .3);
+        g.bezierCurveTo(.36, .26, .4, .2, .42, .14);
+        g.lineTo(.47, .2);
+        g.lineTo(.52, .12);
+        g.bezierCurveTo(.68, .16, .76, .3, .74, .5);
+        g.bezierCurveTo(.73, .6, .7, .68, .7, .74);
+        g.closePath();
+        P();
+        g.beginPath();
+        g.arc(.43, .29, .025, 0, Math.PI * 2);
         g.fillStyle = det;
         g.fill();
-        g.beginPath();
-        g.moveTo(.46, .2);
-        g.lineTo(.52, .13);
-        g.lineTo(.53, .22);
-        g.closePath();
-        g.fillStyle = fg;
-        g.fill();
-        g.strokeStyle = ln;
-        g.stroke();
+        line([.25, .43, .29, .42], .025);
+        line([.6, .2, .68, .32, .7, .46], .025);
+        base(.56);
       }
       if (key === "B") {
         g.beginPath();
-        g.moveTo(.36, .74);
-        g.quadraticCurveTo(.3, .5, .5, .24);
-        g.quadraticCurveTo(.7, .5, .64, .74);
+        g.moveTo(.37, .74);
+        g.bezierCurveTo(.4, .66, .44, .62, .44, .58);
+        g.lineTo(.56, .58);
+        g.bezierCurveTo(.56, .62, .6, .66, .63, .74);
         g.closePath();
-        paint();
-        poly([.33, .78, .67, .78, .64, .72, .36, .72]);
-        paint();
+        P();
+        rr(.37, .54, .26, .06, .02);
+        P();
         g.beginPath();
-        g.arc(.5, .19, .05, 0, Math.PI * 2);
-        paint();
+        g.moveTo(.5, .17);
+        g.bezierCurveTo(.36, .26, .33, .38, .38, .48);
+        g.bezierCurveTo(.4, .52, .44, .54, .5, .54);
+        g.bezierCurveTo(.56, .54, .6, .52, .62, .48);
+        g.bezierCurveTo(.67, .38, .64, .26, .5, .17);
+        g.closePath();
+        P();
         g.beginPath();
-        g.moveTo(.47, .46);
-        g.lineTo(.57, .36);
-        g.strokeStyle = det;
-        g.lineWidth = 2 / Z;
-        g.stroke();
-        base();
+        g.arc(.5, .13, .045, 0, Math.PI * 2);
+        P();
+        line([.46, .4, .56, .29], .03);
+        line([.47, .46, .53, .46], .025);
+        base(.54);
       }
       if (key === "Q") {
-        poly([.34, .78, .38, .44, .62, .44, .66, .78]);
-        paint();
-        poly([.26, .26, .36, .44, .64, .44, .74, .26, .62, .36, .56, .2, .5, .34, .44, .2, .38, .36]);
-        paint();
-        [[.26, .24], [.44, .18], [.56, .18], [.74, .24]].forEach(function (_ref38) {
-          var _ref39 = _slicedToArray(_ref38, 2),
-            cx = _ref39[0],
-            cy = _ref39[1];
+        g.beginPath();
+        g.moveTo(.35, .74);
+        g.bezierCurveTo(.38, .62, .43, .52, .42, .44);
+        g.lineTo(.58, .44);
+        g.bezierCurveTo(.57, .52, .62, .62, .65, .74);
+        g.closePath();
+        P();
+        g.beginPath();
+        g.moveTo(.33, .44);
+        g.lineTo(.24, .22);
+        g.lineTo(.36, .32);
+        g.lineTo(.4, .16);
+        g.lineTo(.5, .3);
+        g.lineTo(.6, .16);
+        g.lineTo(.64, .32);
+        g.lineTo(.76, .22);
+        g.lineTo(.67, .44);
+        g.closePath();
+        P();
+        [[.24, .2], [.4, .14], [.6, .14], [.76, .2]].forEach(function (_ref32) {
+          var _ref33 = _slicedToArray(_ref32, 2),
+            cx = _ref33[0],
+            cy = _ref33[1];
           g.beginPath();
           g.arc(cx, cy, .04, 0, Math.PI * 2);
-          paint();
+          P();
         });
-        base();
+        g.beginPath();
+        g.arc(.5, .26, .045, 0, Math.PI * 2);
+        P();
+        line([.38, .5, .62, .5], .025);
+        base(.58);
       }
       if (key === "K") {
-        poly([.34, .78, .37, .42, .63, .42, .66, .78]);
-        paint();
         g.beginPath();
-        g.moveTo(.3, .42);
-        g.quadraticCurveTo(.3, .26, .5, .3);
-        g.quadraticCurveTo(.7, .26, .7, .42);
+        g.moveTo(.35, .74);
+        g.bezierCurveTo(.38, .62, .43, .54, .42, .46);
+        g.lineTo(.58, .46);
+        g.bezierCurveTo(.57, .54, .62, .62, .65, .74);
         g.closePath();
-        paint();
-        poly([.46, .3, .46, .2, .41, .2, .41, .14, .46, .14, .46, .09, .54, .09, .54, .14, .59, .14, .59, .2, .54, .2, .54, .3]);
-        paint();
-        base();
+        P();
+        g.beginPath();
+        g.moveTo(.32, .46);
+        g.bezierCurveTo(.24, .38, .3, .26, .42, .3);
+        g.bezierCurveTo(.46, .24, .54, .24, .58, .3);
+        g.bezierCurveTo(.7, .26, .76, .38, .68, .46);
+        g.closePath();
+        P();
+        g.beginPath();
+        g.moveTo(.47, .27);
+        g.lineTo(.47, .2);
+        g.lineTo(.42, .2);
+        g.lineTo(.42, .15);
+        g.lineTo(.47, .15);
+        g.lineTo(.47, .09);
+        g.lineTo(.53, .09);
+        g.lineTo(.53, .15);
+        g.lineTo(.58, .15);
+        g.lineTo(.58, .2);
+        g.lineTo(.53, .2);
+        g.lineTo(.53, .27);
+        g.closePath();
+        P();
+        line([.38, .52, .62, .52], .025);
+        base(.58);
       }
       g.restore();
     };
@@ -10747,7 +10510,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       return /mate|empate|Empate|Afogamento/.test(status());
     };
     var draw = function draw() {
-      var _loop11 = function _loop11() {
+      var _loop10 = function _loop10() {
         var i = vis(k),
           x = (k & 7) * Z,
           y = (k >> 3) * Z,
@@ -10756,10 +10519,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         g.fillRect(x, y, Z, Z);
         if (S0.last && S0.last.indexOf(i) >= 0) {
           g.fillStyle = "#000";
-          [[0, 0], [Z - 10, 0], [0, Z - 10], [Z - 10, Z - 10]].forEach(function (_ref40) {
-            var _ref41 = _slicedToArray(_ref40, 2),
-              a = _ref41[0],
-              d = _ref41[1];
+          [[0, 0], [Z - 10, 0], [0, Z - 10], [Z - 10, Z - 10]].forEach(function (_ref34) {
+            var _ref35 = _slicedToArray(_ref34, 2),
+              a = _ref35[0],
+              d = _ref35[1];
             g.fillRect(x + a, y + d, 10, 3);
             g.fillRect(x + a + (a ? 7 : 0), y + d, 3, 10);
           });
@@ -10799,7 +10562,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         }
       };
       for (var k = 0; k < 64; k++) {
-        _loop11();
+        _loop10();
       }
       g.fillStyle = "#000";
       g.font = "12px Bookerly, Literata, Georgia, serif";
@@ -10853,7 +10616,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       thinking = true;
       draw();
       setTimeout(function () {
-        var m = bestMove(S0, st.mode === "facil" ? "facil" : "medio");
+        var m = bestMove(S0, st.mode);
         thinking = false;
         if (m) {
           if (m.promo) m.promo = "Q";
@@ -10922,7 +10685,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       maybeAI();
     };
     var _drawTop = function drawTop() {
-      return top.replaceChildren(segTabs([["2p", "2 jogadores"], ["facil", "Contra o PC: fácil"], ["medio", "Contra o PC: médio"]], st.mode, function (k) {
+      return top.replaceChildren(segTabs([["2p", "2 jogadores"], ["facil", "PC fácil"], ["medio", "PC médio"], ["dificil", "PC difícil"]], st.mode, function (k) {
         st.mode = k;
         save();
         _drawTop();
@@ -10962,6 +10725,649 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       draw();
       maybeAI();
     } else newGame();
+  });
+  ;
+  var MODOS = [["2p", "2 jogadores"], ["f", "PC fácil"], ["m", "PC médio"], ["d", "PC difícil"]];
+  add("ttt", "Jogo da Velha", "ttt", "Jogos para dois", function (b) {
+    var st = X("velha", {
+        mode: "m",
+        placar: {
+          x: 0,
+          o: 0,
+          e: 0
+        }
+      }),
+      W = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+    var top = h("div"),
+      msg = h("p", {
+        class: "score"
+      }),
+      tbl = h("table", {
+        class: "ttt"
+      }),
+      pl = h("div", {
+        class: "ulh"
+      });
+    var bd,
+      turn,
+      over,
+      busy = false;
+    var win = function win(g, p) {
+      return W.some(function (w) {
+        return w.every(function (k) {
+          return g[k] === p;
+        });
+      });
+    };
+    var _mm = function mm(g, p, depth) {
+      if (win(g, "O")) return 10 - depth;
+      if (win(g, "X")) return depth - 10;
+      if (g.every(Boolean)) return 0;
+      var best = p === "O" ? -99 : 99;
+      g.forEach(function (v, i) {
+        if (v) return;
+        g[i] = p;
+        var s = _mm(g, p === "O" ? "X" : "O", depth + 1);
+        g[i] = "";
+        best = p === "O" ? Math.max(best, s) : Math.min(best, s);
+      });
+      return best;
+    };
+    var pcMove = function pcMove() {
+      var free = bd.map(function (v, i) {
+        return v ? -1 : i;
+      }).filter(function (i) {
+        return i >= 0;
+      });
+      if (st.mode === "f" || st.mode === "m" && Math.random() < .35) return pick(free);
+      var best = -99,
+        mv = free[0];
+      shuffle(free).forEach(function (i) {
+        bd[i] = "O";
+        var s = _mm(bd, "X", 0);
+        bd[i] = "";
+        if (s > best) {
+          best = s;
+          mv = i;
+        }
+      });
+      return mv;
+    };
+    var end = function end() {
+      if (win(bd, turn)) {
+        over = true;
+        st.placar[turn === "X" ? "x" : "o"]++;
+        save();
+        msg.textContent = (st.mode === "2p" ? "Jogador " + turn : turn === "X" ? "Você" : "O computador") + " venceu!";
+        return true;
+      }
+      if (bd.every(Boolean)) {
+        over = true;
+        st.placar.e++;
+        save();
+        msg.textContent = "Deu velha (empate).";
+        return true;
+      }
+      return false;
+    };
+    var play = function play(i) {
+      if (over || bd[i] || busy) return;
+      bd[i] = turn;
+      if (!end()) {
+        turn = turn === "X" ? "O" : "X";
+        msg.textContent = st.mode === "2p" ? "Vez de " + turn : turn === "O" ? "O computador está pensando…" : "Sua vez (X)";
+      }
+      draw();
+      if (!over && st.mode !== "2p" && turn === "O") {
+        busy = true;
+        setTimeout(function () {
+          busy = false;
+          bd[pcMove()] = "O";
+          if (!end()) {
+            turn = "X";
+            msg.textContent = "Sua vez (X)";
+          }
+          draw();
+        }, 350);
+      }
+    };
+    var draw = function draw() {
+      top.replaceChildren(segTabs(MODOS, st.mode, function (k) {
+        st.mode = k;
+        save();
+        reset();
+      }));
+      pl.replaceChildren(h("div", {}, h("small", {}, st.mode === "2p" ? "X" : "VOCÊ"), h("b", {}, String(st.placar.x))), h("div", {}, h("small", {}, "EMPATES"), h("b", {}, String(st.placar.e))), h("div", {}, h("small", {}, st.mode === "2p" ? "O" : "PC"), h("b", {}, String(st.placar.o))));
+      var rows = [];
+      var _loop11 = function _loop11(r) {
+        rows.push(h.apply(void 0, ["tr", {}].concat(_toConsumableArray([0, 1, 2].map(function (c) {
+          var i = r * 3 + c;
+          return h("td", {
+            class: bd[i] ? "on" : "",
+            onclick: function onclick() {
+              return play(i);
+            }
+          }, bd[i]);
+        })))));
+      };
+      for (var r = 0; r < 3; r++) {
+        _loop11(r);
+      }
+      tbl.replaceChildren(h.apply(void 0, ["tbody", {}].concat(rows)));
+    };
+    var reset = function reset() {
+      bd = Array(9).fill("");
+      turn = "X";
+      over = false;
+      busy = false;
+      msg.textContent = st.mode === "2p" ? "Vez de X" : "Sua vez (X). Toque numa casa.";
+      draw();
+    };
+    b.append(top, pl, msg, tbl, h("div", {
+      class: "row"
+    }, btn("Nova partida", reset, "solid"), btn("Zerar placar", function () {
+      st.placar = {
+        x: 0,
+        o: 0,
+        e: 0
+      };
+      save();
+      draw();
+    })));
+    reset();
+  });
+  function dmMoves(bd, p, onlyFrom) {
+    var out = [];
+    bd.forEach(function (pc, i) {
+      if (!pc || pc.p !== p || onlyFrom != null && i !== onlyFrom) return;
+      var r = i >> 3,
+        c = i & 7,
+        dirs = pc.k ? [[-1, -1], [-1, 1], [1, -1], [1, 1]] : p === 1 ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]];
+      [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function (_ref36) {
+        var _ref37 = _slicedToArray(_ref36, 2),
+          dr = _ref37[0],
+          dc = _ref37[1];
+        var r1 = r + dr,
+          c1 = c + dc,
+          r2 = r + 2 * dr,
+          c2 = c + 2 * dc;
+        if (r2 < 0 || r2 > 7 || c2 < 0 || c2 > 7) return;
+        var t = bd[r1 * 8 + c1];
+        if (t && t.p !== p && !bd[r2 * 8 + c2]) out.push({
+          from: i,
+          to: r2 * 8 + c2,
+          cap: r1 * 8 + c1
+        });
+      });
+      dirs.forEach(function (_ref38) {
+        var _ref39 = _slicedToArray(_ref38, 2),
+          dr = _ref39[0],
+          dc = _ref39[1];
+        var r1 = r + dr,
+          c1 = c + dc;
+        if (r1 >= 0 && r1 < 8 && c1 >= 0 && c1 < 8 && !bd[r1 * 8 + c1]) out.push({
+          from: i,
+          to: r1 * 8 + c1
+        });
+      });
+    });
+    var caps = out.filter(function (m) {
+      return m.cap !== undefined;
+    });
+    return caps.length ? caps : out;
+  }
+  function dmApply(bd, m) {
+    var n = bd.map(function (x) {
+      return x && {
+        p: x.p,
+        k: x.k
+      };
+    });
+    n[m.to] = n[m.from];
+    n[m.from] = null;
+    if (m.cap !== undefined) n[m.cap] = null;
+    var r = m.to >> 3;
+    var crowned = false;
+    if (!n[m.to].k && (n[m.to].p === 1 && r === 0 || n[m.to].p === 2 && r === 7)) {
+      n[m.to].k = true;
+      crowned = true;
+    }
+    return {
+      bd: n,
+      more: m.cap !== undefined && !crowned && dmMoves(n, n[m.to].p, m.to).some(function (x) {
+        return x.cap !== undefined;
+      })
+    };
+  }
+  function dmTurns(bd, p) {
+    var res = [];
+    var _go = function go(b0, from, seq) {
+      var ms = dmMoves(b0, p, from).filter(function (m) {
+        return from == null || m.cap !== undefined;
+      });
+      if (from != null && !ms.length) {
+        res.push({
+          bd: b0,
+          seq: seq
+        });
+        return;
+      }
+      ms.forEach(function (m) {
+        var a = dmApply(b0, m);
+        if (a.more) _go(a.bd, m.to, seq.concat([m]));else res.push({
+          bd: a.bd,
+          seq: seq.concat([m])
+        });
+      });
+    };
+    _go(bd, null, []);
+    return res;
+  }
+  function dmEval(bd) {
+    var v = 0;
+    bd.forEach(function (x, i) {
+      if (!x) return;
+      var r = i >> 3,
+        val = x.k ? 3 : 1 + (x.p === 2 ? r : 7 - r) * .05;
+      v += x.p === 2 ? val : -val;
+    });
+    return v;
+  }
+  function dmSearch(bd, p, depth, a, bt) {
+    var ts = dmTurns(bd, p);
+    if (!ts.length) return p === 2 ? -100 : 100;
+    if (!depth) return dmEval(bd);
+    if (p === 2) {
+      var _v = -999;
+      var _iterator3 = _createForOfIteratorHelper(ts),
+        _step3;
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var t = _step3.value;
+          _v = Math.max(_v, dmSearch(t.bd, 1, depth - 1, a, bt));
+          a = Math.max(a, _v);
+          if (a >= bt) break;
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+      return _v;
+    }
+    var v = 999;
+    var _iterator4 = _createForOfIteratorHelper(ts),
+      _step4;
+    try {
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var _t6 = _step4.value;
+        v = Math.min(v, dmSearch(_t6.bd, 2, depth - 1, a, bt));
+        bt = Math.min(bt, v);
+        if (a >= bt) break;
+      }
+    } catch (err) {
+      _iterator4.e(err);
+    } finally {
+      _iterator4.f();
+    }
+    return v;
+  }
+  add("checkers", "Damas", "grid", "Jogos para dois", function (b) {
+    var Z = 64,
+      c = cv(8 * Z, 8 * Z),
+      g = c.getContext("2d"),
+      st = X("damas2", {
+        mode: "m"
+      }),
+      top = h("div"),
+      msg = h("p", {
+        class: "score"
+      });
+    var bd,
+      turn,
+      sel,
+      chain,
+      busy = false;
+    c.className += " smooth";
+    var reset = function reset() {
+      bd = Array(64).fill(null);
+      for (var i = 0; i < 64; i++) {
+        var r = i >> 3,
+          cc = i & 7;
+        if ((r + cc) % 2) {
+          if (r < 3) bd[i] = {
+            p: 2,
+            k: false
+          };
+          if (r > 4) bd[i] = {
+            p: 1,
+            k: false
+          };
+        }
+      }
+      turn = 1;
+      sel = null;
+      chain = false;
+      busy = false;
+      draw();
+    };
+    var legal = function legal() {
+      return chain ? dmMoves(bd, turn, sel).filter(function (m) {
+        return m.cap !== undefined;
+      }) : dmMoves(bd, turn);
+    };
+    var pcTurn = function pcTurn() {
+      if (st.mode === "2p" || turn !== 2) return;
+      busy = true;
+      draw();
+      setTimeout(function () {
+        var ts = dmTurns(bd, 2);
+        if (!ts.length) {
+          busy = false;
+          return draw();
+        }
+        var pickT;
+        if (st.mode === "f") pickT = pick(ts);else {
+          var depth = st.mode === "m" ? 2 : 4;
+          var best = -1e9;
+          shuffle(ts).forEach(function (t) {
+            var v = dmSearch(t.bd, 1, depth, -1e9, 1e9) + Math.random() * .01;
+            if (v > best) {
+              best = v;
+              pickT = t;
+            }
+          });
+        }
+        bd = pickT.bd;
+        turn = 1;
+        busy = false;
+        draw();
+      }, 300);
+    };
+    var click = function click(i) {
+      if (busy || st.mode !== "2p" && turn === 2) return;
+      var ms = legal();
+      if (sel !== null) {
+        var m = ms.find(function (x) {
+          return x.from === sel && x.to === i;
+        });
+        if (m) {
+          var a = dmApply(bd, m);
+          bd = a.bd;
+          if (a.more) {
+            sel = m.to;
+            chain = true;
+          } else {
+            sel = null;
+            chain = false;
+            turn = 3 - turn;
+          }
+          draw();
+          pcTurn();
+          return;
+        }
+        if (chain) return;
+      }
+      if (bd[i] && bd[i].p === turn) {
+        if (ms.some(function (m) {
+          return m.from === i;
+        })) sel = i;else {
+          sel = null;
+          msg.textContent = ms.some(function (m) {
+            return m.cap !== undefined;
+          }) ? "Capture com outra peça: a captura é obrigatória." : "Essa peça não pode se mover.";
+          return;
+        }
+      } else sel = null;
+      draw();
+    };
+    var draw = function draw() {
+      top.replaceChildren(segTabs(MODOS, st.mode, function (k) {
+        st.mode = k;
+        save();
+        reset();
+      }));
+      var ms = legal(),
+        over = !ms.length && !busy,
+        you = st.mode !== "2p";
+      msg.textContent = over ? you ? turn === 1 ? "O computador venceu." : "Você venceu!" : "Jogador " + (3 - turn) + " venceu!" : busy ? "O computador está pensando…" : (you ? "Sua vez (brancas)" : "Vez das " + (turn === 1 ? "brancas" : "pretas")) + (chain ? " — continue capturando" : ms.some(function (m) {
+        return m.cap !== undefined;
+      }) ? " — captura obrigatória" : "");
+      var hl = sel !== null ? ms.filter(function (m) {
+        return m.from === sel;
+      }).map(function (m) {
+        return m.to;
+      }) : [];
+      for (var i = 0; i < 64; i++) {
+        var x = (i & 7) * Z,
+          y = (i >> 3) * Z,
+          dark = ((i >> 3) + (i & 7)) % 2;
+        g.fillStyle = dark ? "#8a8a8a" : "#f2f2f2";
+        g.fillRect(x, y, Z, Z);
+        if (i === sel) {
+          g.lineWidth = 5;
+          g.strokeStyle = "#000";
+          g.strokeRect(x + 2.5, y + 2.5, Z - 5, Z - 5);
+        }
+        var p = bd[i];
+        if (p) {
+          var cx = x + Z / 2,
+            cy = y + Z / 2;
+          g.beginPath();
+          g.arc(cx, cy + 3, Z * .36, 0, 7);
+          g.fillStyle = "#000";
+          g.fill();
+          g.beginPath();
+          g.arc(cx, cy, Z * .36, 0, 7);
+          g.fillStyle = p.p === 1 ? "#fff" : "#111";
+          g.fill();
+          g.lineWidth = 2.5;
+          g.strokeStyle = "#000";
+          g.stroke();
+          g.beginPath();
+          g.arc(cx, cy, Z * .24, 0, 7);
+          g.lineWidth = 2;
+          g.strokeStyle = p.p === 1 ? "#999" : "#555";
+          g.stroke();
+          if (p.k) {
+            g.fillStyle = p.p === 1 ? "#000" : "#fff";
+            g.beginPath();
+            g.moveTo(cx - 13, cy + 7);
+            g.lineTo(cx - 14, cy - 7);
+            g.lineTo(cx - 7, cy);
+            g.lineTo(cx, cy - 10);
+            g.lineTo(cx + 7, cy);
+            g.lineTo(cx + 14, cy - 7);
+            g.lineTo(cx + 13, cy + 7);
+            g.closePath();
+            g.fill();
+          }
+        }
+        if (hl.indexOf(i) >= 0) {
+          g.beginPath();
+          g.arc(x + Z / 2, y + Z / 2, Z * .13, 0, 7);
+          g.fillStyle = "#000";
+          g.fill();
+          g.lineWidth = 2;
+          g.strokeStyle = "#fff";
+          g.stroke();
+        }
+      }
+      keepPut("damas2", {
+        bd: bd,
+        turn: turn
+      });
+    };
+    onPointer(c, function (e) {
+      var p = ptr(c, e);
+      click(Math.floor(p[1] / Z) * 8 + Math.floor(p[0] / Z));
+    });
+    b.append(top, msg, c, btn("Novo jogo", reset, "solid"), h("p", {
+      class: "muted"
+    }, "Toque numa peça e depois na bolinha para onde ela vai. A captura é obrigatória; quem chega ao outro lado vira dama (coroa)."));
+    var sv = keepGet("damas2");
+    if (sv && sv.bd) {
+      bd = sv.bd;
+      turn = sv.turn;
+      sel = null;
+      chain = false;
+      draw();
+      pcTurn();
+    } else reset();
+  });
+  add("battleship", "Batalha Naval", "flag", "Jogos para dois", function (b) {
+    var N = 8,
+      SH = [4, 3, 3, 2],
+      st = X("naval", {
+        mode: "m"
+      }),
+      top = h("div"),
+      msg = h("p", {
+        class: "score"
+      }),
+      A = h("div"),
+      B = h("div");
+    var mine, theirs, sMe, sPc, over, hunt;
+    var place = function place() {
+      var g = Array(N * N).fill(0);
+      SH.forEach(function (len, id) {
+        var _loop12 = function _loop12() {
+          var hz = rnd(2),
+            x = rnd(N - (hz ? len - 1 : 0)),
+            y = rnd(N - (hz ? 0 : len - 1)),
+            cs = Array.from({
+              length: len
+            }, function (_, k) {
+              return (y + (hz ? 0 : k)) * N + x + (hz ? k : 0);
+            });
+          if (cs.every(function (i) {
+            return !g[i];
+          })) {
+            cs.forEach(function (i) {
+              g[i] = id + 1;
+            });
+            return 1;
+          }
+        };
+        for (;;) {
+          if (_loop12()) break;
+        }
+      });
+      return g;
+    };
+    var sunk = function sunk(g, s, id) {
+      return g.every(function (v, i) {
+        return v !== id || s[i];
+      });
+    };
+    var done = function done(g, s) {
+      return g.every(function (v, i) {
+        return !v || s[i];
+      });
+    };
+    var grid = function grid(g, s, show, click) {
+      var rows = [];
+      var _loop13 = function _loop13(r) {
+        rows.push(h.apply(void 0, ["tr", {}].concat(_toConsumableArray(Array.from({
+          length: N
+        }, function (_, cc) {
+          var i = r * N + cc,
+            hit = s[i] && g[i],
+            miss = s[i] && !g[i];
+          return h("td", {
+            class: (hit ? "hit" : miss ? "miss" : show && g[i] ? "ship" : "") + (hit && sunk(g, s, g[i]) ? " sunk" : ""),
+            onclick: click ? function () {
+              return click(i);
+            } : null
+          }, hit ? "×" : miss ? "•" : "");
+        })))));
+      };
+      for (var r = 0; r < N; r++) {
+        _loop13(r);
+      }
+      return h("table", {
+        class: "naval"
+      }, h.apply(void 0, ["tbody", {}].concat(rows)));
+    };
+    var pcShot = function pcShot() {
+      var free = function free(i) {
+        return i >= 0 && i < N * N && !sPc[i];
+      };
+      var t = -1;
+      if (st.mode !== "f") {
+        while (hunt.length && t < 0) {
+          var c = hunt.shift();
+          if (free(c)) t = c;
+        }
+      }
+      if (t < 0) {
+        var cand = [];
+        for (var i = 0; i < N * N; i++) if (!sPc[i] && (st.mode !== "d" || ((i >> 3) + (i & 7)) % 2 === 0)) cand.push(i);
+        t = cand.length ? pick(cand) : function () {
+          var i;
+          do i = rnd(N * N); while (sPc[i]);
+          return i;
+        }();
+      }
+      sPc[t] = 1;
+      if (mine[t] && st.mode !== "f") {
+        var r = t >> 3,
+          cc = t & 7;
+        [[r - 1, cc], [r + 1, cc], [r, cc - 1], [r, cc + 1]].forEach(function (_ref40) {
+          var _ref41 = _slicedToArray(_ref40, 2),
+            rr = _ref41[0],
+            c2 = _ref41[1];
+          if (rr >= 0 && rr < N && c2 >= 0 && c2 < N) hunt.push(rr * N + c2);
+        });
+        if (sunk(mine, sPc, mine[t])) hunt = [];
+      }
+      return t;
+    };
+    var fire = function fire(i) {
+      if (over || sMe[i]) return;
+      sMe[i] = 1;
+      var txt = theirs[i] ? sunk(theirs, sMe, theirs[i]) ? "Você afundou um navio!" : "Acertou!" : "Água.";
+      if (done(theirs, sMe)) {
+        over = true;
+        msg.textContent = "Você venceu! Afundou toda a frota.";
+        return draw();
+      }
+      var t = pcShot();
+      txt += "  O computador " + (mine[t] ? sunk(mine, sPc, mine[t]) ? "afundou um navio seu." : "acertou um navio seu." : "errou.");
+      if (done(mine, sPc)) {
+        over = true;
+        txt = "O computador afundou toda a sua frota.";
+      }
+      msg.textContent = txt;
+      draw();
+    };
+    var draw = function draw() {
+      top.replaceChildren(segTabs(MODOS.slice(1), st.mode, function (k) {
+        st.mode = k;
+        save();
+        reset();
+      }));
+      B.replaceChildren(h("div", {
+        class: "lbl2"
+      }, "Mar inimigo — toque para atirar"), grid(theirs, sMe, over, fire));
+      A.replaceChildren(h("div", {
+        class: "lbl2"
+      }, "Sua frota"), grid(mine, sPc, true, null));
+    };
+    var reset = function reset() {
+      mine = place();
+      theirs = place();
+      sMe = Array(N * N).fill(0);
+      sPc = Array(N * N).fill(0);
+      over = false;
+      hunt = [];
+      msg.textContent = "Afunde os 4 navios inimigos (tamanhos 4, 3, 3 e 2).";
+      draw();
+    };
+    b.append(top, msg, B, A, btn("Novo jogo", reset, "solid"), h("p", {
+      class: "muted"
+    }, "× = acerto, • = água. No difícil o computador atira de forma estratégica."));
+    reset();
   });
   ;
   function boot() {

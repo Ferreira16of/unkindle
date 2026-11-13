@@ -586,3 +586,30 @@ html{scrollbar-width:thin;scrollbar-color:#9a9a9a transparent}
 #page ::-webkit-scrollbar-thumb,.chatbox::-webkit-scrollbar-thumb{border-color:#ffffff}
 
 canvas.smooth{image-rendering:auto}
+
+/* Jogo da Velha e Batalha Naval */
+table.ttt{border-collapse:separate;border-spacing:8px;margin:6px auto 12px;width:100%;max-width:330px;table-layout:fixed}
+table.ttt td{height:96px;text-align:center;vertical-align:middle;border:2px solid #9a9a9a;border-radius:14px;-webkit-border-radius:14px;font-size:2.6em;font-weight:700;cursor:pointer}
+table.ttt td.on{border-color:#000000}
+table.naval{border-collapse:collapse;margin:4px 0 14px;width:100%;max-width:400px;table-layout:fixed}
+table.naval td{height:42px;text-align:center;vertical-align:middle;border:1px solid #9a9a9a;font-size:1.2em;font-weight:700;cursor:pointer}
+table.naval td.ship{background:#4a4a4a}
+table.naval td.hit{background:#000000;color:#ffffff}
+table.naval td.sunk{text-decoration:line-through}
+table.naval td.miss{color:#4a4a4a}
+
+/* Cabeçalho alinhado (Kindle 536 px): tudo com a mesma altura e centralizado */
+#top .tb{height:58px;line-height:1;white-space:nowrap}
+#top .tb>*{vertical-align:middle}
+#top .logo,#clock{display:inline-block;vertical-align:middle;line-height:38px}
+#top .ib,#top .hb,#btn-auth{display:inline-block;vertical-align:middle;height:38px;min-height:38px;line-height:34px;padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0}
+#top .ib{width:38px;min-width:38px;padding:0}
+#top .ib .ico,#btn-auth .ico{vertical-align:middle}
+#auth-out{white-space:nowrap}
+@media (max-width:600px){
+  #top #btn-signup{display:none}
+  .tl{width:38%}.tc{width:20%}.tr{width:42%}
+  .logo{letter-spacing:2px;font-size:.95em}
+  #clock{font-size:1em}
+  #top .tb{padding:0 8px}
+}

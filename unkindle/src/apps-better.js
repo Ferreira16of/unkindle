@@ -50,7 +50,15 @@ function petApp(id, n, getter) {
 }
 petApp("x_gato", "Gatos", () => Promise.all([api("https://api.thecatapi.com/v1/images/search"), api("https://catfact.ninja/fact").then(j => ptBR(j.fact), () => "")]).then(r => ({ img: r[0][0].url, title: "Você sabia?", text: r[1] })));
 const RACAS = { labrador: "Labrador", retriever: "Retriever", husky: "Husky", pug: "Pug", beagle: "Beagle", poodle: "Poodle", bulldog: "Buldogue", boxer: "Boxer", corgi: "Corgi", dachshund: "Dachshund (salsicha)", shihtzu: "Shih-tzu", chihuahua: "Chihuahua", collie: "Collie", germanshepherd: "Pastor-alemão", rottweiler: "Rottweiler", maltese: "Maltês", pomeranian: "Lulu-da-pomerânia", terrier: "Terrier", spaniel: "Spaniel", akita: "Akita", samoyed: "Samoieda", doberman: "Dobermann", dalmatian: "Dálmata", shiba: "Shiba" };
-petApp("x_cao", "Cachorros", () => api("https://dog.ceo/api/breeds/image/random").then(j => { const m = /breeds\/([^/]+)\//.exec(j.message), k = m ? m[1].split("-") : [""], nm = RACAS[k[0]] || (k[0] ? k[0].charAt(0).toUpperCase() + k[0].slice(1) : ""); return { img: j.message, title: nm ? "Raça: " + nm + (k[1] && !RACAS[k[0]] ? " " + k[1] : "") : "" }; }));
+/* Cachorros: várias fontes (se uma sair do ar, tenta a próxima) */
+const dogNome = n => { const k = String(n || "").toLowerCase().replace(/[^a-z]/g, ""); for (const r in RACAS) if (k.indexOf(r) >= 0) return RACAS[r]; return n ? String(n).charAt(0).toUpperCase() + String(n).slice(1) : ""; };
+const dogSrc = [
+  () => api("https://api.thedogapi.com/v1/images/search?size=med&mime_types=jpg,png").then(j => { const d = j[0]; if (!d || !d.url) throw 0; return { img: d.url, title: d.breeds && d.breeds[0] ? "Raça: " + dogNome(d.breeds[0].name) : "" }; }),
+  () => api("https://dog.ceo/api/breeds/image/random").then(j => { const m = /breeds\/([^/]+)\//.exec(j.message), k = m ? m[1].split("-")[0] : ""; return { img: j.message, title: k ? "Raça: " + dogNome(k) : "" }; }),
+  () => api("https://random.dog/woof.json?filter=mp4,webm,gif").then(j => { if (!/\.(jpe?g|png)$/i.test(j.url) || j.fileSizeBytes > 3e6) throw 0; return { img: j.url, title: "" }; })
+];
+const dogAny = (i = 0) => i >= dogSrc.length ? Promise.reject(new Error("sem fonte")) : dogSrc[i]().catch(() => dogAny(i + 1));
+petApp("x_cao", "Cachorros", () => dogAny());
 
 /* ---------- Conversor de unidades ---------- */
 const UNI = {
@@ -182,7 +190,7 @@ add("dino", "Dino", "dino", "Jogos", b => {
     obs.forEach(o => { for (let k = 0; k < o.n; k++) sprite(g, CACTO, o.x + k * 18, GY - 30, 3); });
     g.font = "bold 18px Bookerly, Literata, Georgia, serif"; g.textAlign = "right"; g.fillText("HI " + String(best).padStart(5, "0") + "  " + String(Math.floor(sc / 4)).padStart(5, "0"), W2 - 12, 28);
     g.textAlign = "center"; if (!started) g.fillText("TOQUE PARA COMEÇAR", W2 / 2, 90); if (dead) g.fillText("G A M E   O V E R", W2 / 2, 80);
-    info.textContent = dead ? "Toque na tela para jogar de novo" : "Toque na tela, espaço ou seta para cima para pular";
+    info.textContent = dead ? "Toque na tela para jogar de novo" : "Toque na tela ou no botão Pular para saltar os cactos";
   }, 33);
   b.append(c, info, btn("Pular", jump, "solid wide"));
 });
@@ -239,44 +247,11 @@ add("blocks", "Untetris", "grid", "Jogos", b => {
     h("table", { class: "tpad" }, h("tbody", {},
       h("tr", {}, h("td", {}, hold(ic("back", 32), "ArrowLeft")), h("td", {}, hold("GIRAR", "rot", "solid")), h("td", {}, hold(ic("fwd", 32), "ArrowRight"))),
       h("tr", {}, h("td", {}, hold("PAUSA", "pause")), h("td", {}, hold(ic("down", 32), "ArrowDown")), h("td", {}, hold("QUEDA", "drop"))))),
-    h("p", { class: "muted" }, "Toque nas laterais do tabuleiro para mover, no meio para girar, ou arraste para baixo para derrubar. No teclado: setas, espaço e P."));
+    h("p", { class: "muted" }, "Use os botões grandes, ou toque nas laterais do tabuleiro para mover e no meio para girar. Arrastar para baixo derruba a peça."));
   const svT = keepGet("tetris"); if (svT && svT.bd) { bd = svT.bd; p = svT.p; nxt = svT.nxt; px = svT.px; py = svT.py; sc = svT.sc; lines = svT.lines; lvl = svT.lvl; dead = false; paused = true; draw(); } else reset();
 });
 
 /* ---------- Damas (tabuleiro desenhado em canvas: funciona em qualquer navegador) ---------- */
-add("checkers", "Damas", "grid", "Jogos para dois", b => {
-  const Z = 50, c = cv(8 * Z, 8 * Z), g = c.getContext("2d"), msg = h("p", { class: "score" }); let bd, turn, sel, chain;
-  const reset = () => { bd = Array(64).fill(null); for (let i = 0; i < 64; i++) { const r = Math.floor(i / 8), cc = i % 8; if ((r + cc) % 2) { if (r < 3) bd[i] = { p: 2, k: false }; if (r > 4) bd[i] = { p: 1, k: false }; } } turn = 1; sel = null; chain = false; draw(); };
-  const moves = i => { const pc = bd[i], r = Math.floor(i / 8), cc = i % 8, out = [], dirs = pc.k ? [[-1, -1], [-1, 1], [1, -1], [1, 1]] : pc.p === 1 ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]], caps = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
-    dirs.forEach(([dr, dc]) => { const r1 = r + dr, c1 = cc + dc; if (r1 >= 0 && r1 < 8 && c1 >= 0 && c1 < 8 && !bd[r1 * 8 + c1]) out.push({ to: r1 * 8 + c1 }); });
-    caps.forEach(([dr, dc]) => { const r1 = r + dr, c1 = cc + dc, r2 = r + 2 * dr, c2 = cc + 2 * dc; if (r2 < 0 || r2 > 7 || c2 < 0 || c2 > 7) return; const t = bd[r1 * 8 + c1]; if (t && t.p !== pc.p && !bd[r2 * 8 + c2]) out.push({ to: r2 * 8 + c2, cap: r1 * 8 + c1 }); });
-    return out; };
-  const all = p => { const o = []; bd.forEach((x, i) => { if (x && x.p === p) moves(i).forEach(m => o.push(Object.assign({ from: i }, m))); }); return o; };
-  const legal = i => { const a = all(turn), mustCap = a.some(m => m.cap !== undefined); return a.filter(m => m.from === i && (!mustCap || m.cap !== undefined) && (!chain || m.cap !== undefined)); };
-  const go = m => { bd[m.to] = bd[m.from]; bd[m.from] = null; if (m.cap !== undefined) bd[m.cap] = null; const r = Math.floor(m.to / 8);
-    let crowned = false; if (!bd[m.to].k && ((bd[m.to].p === 1 && r === 0) || (bd[m.to].p === 2 && r === 7))) { bd[m.to].k = true; crowned = true; }
-    if (m.cap !== undefined && !crowned && moves(m.to).some(x => x.cap !== undefined)) { sel = m.to; chain = true; } else { turn = 3 - turn; sel = null; chain = false; } draw(); };
-  const click = i => {
-    if (sel !== null) { const m = legal(sel).find(x => x.to === i); if (m) return go(m); if (chain) return; }
-    if (bd[i] && bd[i].p === turn) { if (legal(i).length) sel = i; else { sel = null; msg.textContent = all(turn).some(m => m.cap !== undefined) ? "Você precisa capturar com outra peça." : "Essa peça não pode se mover."; return; } } else sel = null;
-    draw();
-  };
-  const draw = () => {
-    keepPut("damas", { bd, turn, chain, sel });
-    const over = !all(turn).length;
-    msg.textContent = over ? "Jogador " + (3 - turn) + " venceu!" : "Vez das " + (turn === 1 ? "brancas" : "pretas") + (chain ? " — continue capturando" : all(turn).some(m => m.cap !== undefined) ? " — captura obrigatória" : "");
-    const hl = sel !== null ? legal(sel).map(m => m.to) : [];
-    for (let i = 0; i < 64; i++) { const x = (i % 8) * Z, y = Math.floor(i / 8) * Z, dark = (Math.floor(i / 8) + i % 8) % 2;
-      g.fillStyle = dark ? "#777" : "#fff"; g.fillRect(x, y, Z, Z);
-      if (i === sel) { g.fillStyle = "#000"; g.fillRect(x, y, Z, 4); g.fillRect(x, y + Z - 4, Z, 4); g.fillRect(x, y, 4, Z); g.fillRect(x + Z - 4, y, 4, Z); }
-      if (hl.indexOf(i) >= 0) { g.fillStyle = "#000"; g.fillRect(x + Z / 2 - 6, y + Z / 2 - 6, 12, 12); g.fillStyle = "#fff"; g.fillRect(x + Z / 2 - 3, y + Z / 2 - 3, 6, 6); }
-      const p = bd[i]; if (p) { g.beginPath(); g.arc(x + Z / 2, y + Z / 2, Z * .36, 0, 7); g.fillStyle = p.p === 1 ? "#fff" : "#000"; g.fill(); g.lineWidth = 3; g.strokeStyle = p.p === 1 ? "#000" : "#fff"; g.stroke();
-        if (p.k) { g.fillStyle = p.p === 1 ? "#000" : "#fff"; g.fillRect(x + 16, y + 22, 18, 8); g.fillRect(x + 16, y + 16, 4, 6); g.fillRect(x + 23, y + 14, 4, 8); g.fillRect(x + 30, y + 16, 4, 6); } } }
-    g.strokeStyle = "#000"; g.lineWidth = 2; g.strokeRect(1, 1, 8 * Z - 2, 8 * Z - 2);
-  };
-  onPointer(c, e => { const p = ptr(c, e); click(Math.floor(p[1] / Z) * 8 + Math.floor(p[0] / Z)); });
-  b.append(h("p", { class: "muted" }, "Duas pessoas no mesmo aparelho. Toque numa peça e depois no quadradinho marcado. Captura é obrigatória; quem chega ao outro lado vira dama (coroa)."), msg, c, btn("Novo jogo", reset, "solid")); const svD = keepGet("damas"); if (svD && svD.bd) { bd = svD.bd; turn = svD.turn; chain = svD.chain; sel = svD.sel; draw(); } else reset();
-});
 
 /* ---------- Caça-palavras ---------- */
 const CP = ["livro", "casa", "mesa", "gato", "pedra", "nuvem", "vento", "fogo", "terra", "flor", "chuva", "praia", "janela", "cadeira", "escola", "jardim", "lago", "ponte", "trem", "barco", "estrela", "planeta", "sorvete", "banana"];

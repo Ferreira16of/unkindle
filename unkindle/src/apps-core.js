@@ -54,22 +54,6 @@ add("pomo", "Pomodoro", "pomo", "Ferramentas", function (b) {
 
 
 
-add("ttt", "Jogo da velha", "ttt", "Jogos", function (b) {
-  var bd = ["", "", "", "", "", "", "", "", ""], turn = "X", over = false, st = h("p"), g = h("div", { "class": "g3", style: "max-width:300px" });
-  var W = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
-  var draw = function () {
-    g.replaceChildren.apply(g, bd.map(function (c, i) {
-      return h("button", { style: "height:96px;font-size:2.2em", onclick: function () {
-        if (c || over) return; bd[i] = turn;
-        if (W.some(function (w) { return w.every(function (k) { return bd[k] === turn; }); })) { over = true; st.textContent = turn + " venceu!"; }
-        else if (bd.every(function (x) { return x; })) { over = true; st.textContent = "Empate."; }
-        else { turn = turn === "X" ? "O" : "X"; st.textContent = "Vez de " + turn; }
-        draw(); } }, c);
-    }));
-  };
-  st.textContent = "Vez de X";
-  b.append(st, g, h("div", { style: "height:8px" }), h("button", { "class": "solid", onclick: function () { bd = ["", "", "", "", "", "", "", "", ""]; turn = "X"; over = false; st.textContent = "Vez de X"; draw(); } }, "Reiniciar")); draw();
-});
 
 
 add("guess", "Adivinhe o número", "guess", "Jogos", function (b) {

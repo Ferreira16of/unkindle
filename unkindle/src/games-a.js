@@ -42,7 +42,7 @@ function runner(b, o) {
     obs.forEach(a => { if (o.spike) { g.beginPath(); g.moveTo(a.x, 140); g.lineTo(a.x + a.w / 2, 140 - a.h); g.lineTo(a.x + a.w, 140); g.fill(); } else g.fillRect(a.x, 140 - a.h, a.w, a.h); });
     info.textContent = `Pontos: ${Math.floor(sc / 5)}  ·  Recorde: ${Math.floor(best / 5)}` + (dead ? "  ·  Fim! Toque para reiniciar" : "");
   }, 40);
-  b.append(h("p", { class: "muted" }, "Toque na tela ou use espaço para pular."), c, info, btn("Pular", jump, "solid"));
+  b.append(h("p", { class: "muted" }, "Toque na tela para pular."), c, info, btn("Pular", jump, "solid"));
 }
 
 function lanes(b, o) {
@@ -58,7 +58,7 @@ function lanes(b, o) {
     obs.forEach(a => { if (o.wave) { g.fillRect(a.l * 80 + 10, a.y, 60, 12); g.fillRect(a.l * 80 + 22, a.y - 10, 36, 10); } else { g.strokeRect(a.l * 80 + 22, a.y, 36, 40); g.fillRect(a.l * 80 + 22, a.y + 4, 36, 6); } });
     info.textContent = `Pontos: ${Math.floor(sc / 5)}  ·  Recorde: ${Math.floor(best / 5)}` + (dead ? "  ·  Fim! Toque para reiniciar" : "");
   }, 40);
-  b.append(h("p", { class: "muted" }, "Toque na metade esquerda ou direita, ou use as setas."), c, info, dpad(mv));
+  b.append(h("p", { class: "muted" }, "Toque na metade esquerda ou direita da pista, ou use os botões."), c, info, dpad(mv));
 }
 add("surf", "Surfista", "wind", "Jogos", b => lanes(b, { id: "surf", speed: 5, gap: 45, wave: true }));
 

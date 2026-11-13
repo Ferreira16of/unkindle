@@ -73,7 +73,7 @@ function search(s, depth, alpha, beta) {
 function bestMove(s, lvl) {
   const ms = legalMoves(s); if (!ms.length) return null;
   if (lvl === "facil" && Math.random() < .35) return pick(ms);
-  const depth = lvl === "facil" ? 1 : 2; let best = null, bv = -Infinity;
+  const depth = lvl === "facil" ? 1 : lvl === "dificil" ? 3 : 2; let best = null, bv = -Infinity;
   shuffle(ms).forEach(m => { const v = -search(applyMove(s, m), depth, -Infinity, Infinity) + Math.random() * 6; if (v > bv) { bv = v; best = m; } });
   return best;
 }
@@ -82,19 +82,67 @@ add("chess", "Xadrez", "chess", "Jogos para dois", b => {
   const Z = 64, c = cv(8 * Z, 8 * Z), g = c.getContext("2d"), st = X("xadrez", { mode: "2p", flip: false });
   const top = h("div"), msg = h("p", { class: "score" }), capW = h("div", { class: "caps" }), capB = h("div", { class: "caps" }), promoBox = h("div", { class: "row" }), list = h("div", { class: "mvlist" });
   let S0, hist, sel = null, targets = [], thinking = false, promoWait = null;
-  /* Peças desenhadas em vetor (suaves), com contorno grosso para ler bem no e-ink */
+  /* Peças no estilo clássico (Staunton), desenhadas em vetor: contorno firme, base em dois degraus */
   const sprite = (key, x, y, white) => {
-    const fg = white ? "#fff" : "#000", ln = "#000", det = white ? "#000" : "#fff";
-    g.save(); g.translate(x, y); g.scale(Z, Z); g.lineJoin = "round"; g.lineCap = "round"; g.lineWidth = 2.6 / Z;
-    const poly = pts => { g.beginPath(); g.moveTo(pts[0], pts[1]); for (let i = 2; i < pts.length; i += 2) g.lineTo(pts[i], pts[i + 1]); g.closePath(); };
-    const paint = () => { g.fillStyle = fg; g.fill(); g.strokeStyle = ln; g.stroke(); };
-    const base = () => { poly([.24, .86, .76, .86, .74, .78, .26, .78]); paint(); };
-    if (key === "P") { g.beginPath(); g.moveTo(.36, .78); g.quadraticCurveTo(.38, .56, .45, .48); g.lineTo(.55, .48); g.quadraticCurveTo(.62, .56, .64, .78); g.closePath(); paint(); g.beginPath(); g.arc(.5, .35, .12, 0, Math.PI * 2); paint(); base(); }
-    if (key === "R") { poly([.33, .78, .35, .42, .65, .42, .67, .78]); paint(); poly([.27, .42, .27, .22, .36, .22, .36, .29, .45, .29, .45, .22, .55, .22, .55, .29, .64, .29, .64, .22, .73, .22, .73, .42]); paint(); base(); g.beginPath(); g.moveTo(.36, .5); g.lineTo(.64, .5); g.strokeStyle = det; g.lineWidth = 1.6 / Z; g.stroke(); }
-    if (key === "N") { poly([.30, .78, .70, .78, .70, .62, .66, .44, .62, .3, .54, .2, .46, .16, .45, .23, .36, .27, .24, .42, .23, .5, .3, .55, .4, .48, .46, .5, .38, .64, .33, .72]); paint(); base(); g.beginPath(); g.arc(.43, .32, .025, 0, Math.PI * 2); g.fillStyle = det; g.fill(); g.beginPath(); g.moveTo(.46, .2); g.lineTo(.52, .13); g.lineTo(.53, .22); g.closePath(); g.fillStyle = fg; g.fill(); g.strokeStyle = ln; g.stroke(); }
-    if (key === "B") { g.beginPath(); g.moveTo(.36, .74); g.quadraticCurveTo(.3, .5, .5, .24); g.quadraticCurveTo(.7, .5, .64, .74); g.closePath(); paint(); poly([.33, .78, .67, .78, .64, .72, .36, .72]); paint(); g.beginPath(); g.arc(.5, .19, .05, 0, Math.PI * 2); paint(); g.beginPath(); g.moveTo(.47, .46); g.lineTo(.57, .36); g.strokeStyle = det; g.lineWidth = 2 / Z; g.stroke(); base(); }
-    if (key === "Q") { poly([.34, .78, .38, .44, .62, .44, .66, .78]); paint(); poly([.26, .26, .36, .44, .64, .44, .74, .26, .62, .36, .56, .2, .5, .34, .44, .2, .38, .36]); paint(); [[.26, .24], [.44, .18], [.56, .18], [.74, .24]].forEach(([cx, cy]) => { g.beginPath(); g.arc(cx, cy, .04, 0, Math.PI * 2); paint(); }); base(); }
-    if (key === "K") { poly([.34, .78, .37, .42, .63, .42, .66, .78]); paint(); g.beginPath(); g.moveTo(.3, .42); g.quadraticCurveTo(.3, .26, .5, .3); g.quadraticCurveTo(.7, .26, .7, .42); g.closePath(); paint(); poly([.46, .3, .46, .2, .41, .2, .41, .14, .46, .14, .46, .09, .54, .09, .54, .14, .59, .14, .59, .2, .54, .2, .54, .3]); paint(); base(); }
+    const fg = white ? "#fff" : "#111", ln = "#000", det = white ? "#000" : "#fff";
+    g.save(); g.translate(x, y); g.scale(Z, Z); g.lineJoin = "round"; g.lineCap = "round"; g.lineWidth = 0.04;
+    const P = () => { g.fillStyle = fg; g.fill(); g.strokeStyle = ln; g.stroke(); };
+    const line = (pts, w) => { g.beginPath(); g.moveTo(pts[0], pts[1]); for (let i = 2; i < pts.length; i += 2) g.lineTo(pts[i], pts[i + 1]); g.strokeStyle = det; g.lineWidth = w || 0.03; g.stroke(); g.lineWidth = 0.04; };
+    const rr = (x0, y0, w, h0, r) => { g.beginPath(); g.moveTo(x0 + r, y0); g.lineTo(x0 + w - r, y0); g.quadraticCurveTo(x0 + w, y0, x0 + w, y0 + r); g.lineTo(x0 + w, y0 + h0 - r); g.quadraticCurveTo(x0 + w, y0 + h0, x0 + w - r, y0 + h0); g.lineTo(x0 + r, y0 + h0); g.quadraticCurveTo(x0, y0 + h0, x0, y0 + h0 - r); g.lineTo(x0, y0 + r); g.quadraticCurveTo(x0, y0, x0 + r, y0); g.closePath(); };
+    const base = (w) => { w = w || .56; rr(.5 - w / 2, .8, w, .09, .03); P(); rr(.5 - w / 2 + .06, .74, w - .12, .07, .025); P(); };
+    if (key === "P") {
+      g.beginPath(); g.moveTo(.37, .75); g.bezierCurveTo(.37, .62, .43, .55, .45, .47); g.lineTo(.55, .47); g.bezierCurveTo(.57, .55, .63, .62, .63, .75); g.closePath(); P();
+      g.beginPath(); g.ellipse ? g.ellipse(.5, .46, .12, .035, 0, 0, Math.PI * 2) : g.arc(.5, .46, .1, 0, Math.PI * 2); P();
+      g.beginPath(); g.arc(.5, .31, .115, 0, Math.PI * 2); P();
+      base(.5);
+    }
+    if (key === "R") {
+      g.beginPath(); g.moveTo(.36, .74); g.lineTo(.38, .4); g.lineTo(.62, .4); g.lineTo(.64, .74); g.closePath(); P();
+      rr(.31, .34, .38, .07, .015); P();
+      g.beginPath(); g.moveTo(.3, .34); g.lineTo(.3, .17); g.lineTo(.38, .17); g.lineTo(.38, .23); g.lineTo(.46, .23); g.lineTo(.46, .17); g.lineTo(.54, .17); g.lineTo(.54, .23); g.lineTo(.62, .23); g.lineTo(.62, .17); g.lineTo(.7, .17); g.lineTo(.7, .34); g.closePath(); P();
+      line([.39, .47, .61, .47]); line([.39, .66, .61, .66]);
+      base(.56);
+    }
+    if (key === "N") {
+      g.beginPath();
+      g.moveTo(.3, .74);
+      g.bezierCurveTo(.3, .6, .36, .52, .4, .46);
+      g.bezierCurveTo(.33, .46, .25, .5, .22, .45);
+      g.bezierCurveTo(.19, .4, .24, .34, .3, .3);
+      g.bezierCurveTo(.36, .26, .4, .2, .42, .14);
+      g.lineTo(.47, .2);
+      g.lineTo(.52, .12);
+      g.bezierCurveTo(.68, .16, .76, .3, .74, .5);
+      g.bezierCurveTo(.73, .6, .7, .68, .7, .74);
+      g.closePath(); P();
+      g.beginPath(); g.arc(.43, .29, .025, 0, Math.PI * 2); g.fillStyle = det; g.fill();
+      line([.25, .43, .29, .42], .025);
+      line([.6, .2, .68, .32, .7, .46], .025);
+      base(.56);
+    }
+    if (key === "B") {
+      g.beginPath(); g.moveTo(.37, .74); g.bezierCurveTo(.4, .66, .44, .62, .44, .58); g.lineTo(.56, .58); g.bezierCurveTo(.56, .62, .6, .66, .63, .74); g.closePath(); P();
+      rr(.37, .54, .26, .06, .02); P();
+      g.beginPath(); g.moveTo(.5, .17); g.bezierCurveTo(.36, .26, .33, .38, .38, .48); g.bezierCurveTo(.4, .52, .44, .54, .5, .54); g.bezierCurveTo(.56, .54, .6, .52, .62, .48); g.bezierCurveTo(.67, .38, .64, .26, .5, .17); g.closePath(); P();
+      g.beginPath(); g.arc(.5, .13, .045, 0, Math.PI * 2); P();
+      line([.46, .4, .56, .29], .03); line([.47, .46, .53, .46], .025);
+      base(.54);
+    }
+    if (key === "Q") {
+      g.beginPath(); g.moveTo(.35, .74); g.bezierCurveTo(.38, .62, .43, .52, .42, .44); g.lineTo(.58, .44); g.bezierCurveTo(.57, .52, .62, .62, .65, .74); g.closePath(); P();
+      g.beginPath(); g.moveTo(.33, .44); g.lineTo(.24, .22); g.lineTo(.36, .32); g.lineTo(.4, .16); g.lineTo(.5, .3); g.lineTo(.6, .16); g.lineTo(.64, .32); g.lineTo(.76, .22); g.lineTo(.67, .44); g.closePath(); P();
+      [[.24, .2], [.4, .14], [.6, .14], [.76, .2]].forEach(([cx, cy]) => { g.beginPath(); g.arc(cx, cy, .04, 0, Math.PI * 2); P(); });
+      g.beginPath(); g.arc(.5, .26, .045, 0, Math.PI * 2); P();
+      line([.38, .5, .62, .5], .025);
+      base(.58);
+    }
+    if (key === "K") {
+      g.beginPath(); g.moveTo(.35, .74); g.bezierCurveTo(.38, .62, .43, .54, .42, .46); g.lineTo(.58, .46); g.bezierCurveTo(.57, .54, .62, .62, .65, .74); g.closePath(); P();
+      g.beginPath(); g.moveTo(.32, .46); g.bezierCurveTo(.24, .38, .3, .26, .42, .3); g.bezierCurveTo(.46, .24, .54, .24, .58, .3); g.bezierCurveTo(.7, .26, .76, .38, .68, .46); g.closePath(); P();
+      g.beginPath(); g.moveTo(.47, .27); g.lineTo(.47, .2); g.lineTo(.42, .2); g.lineTo(.42, .15); g.lineTo(.47, .15); g.lineTo(.47, .09); g.lineTo(.53, .09); g.lineTo(.53, .15); g.lineTo(.58, .15); g.lineTo(.58, .2); g.lineTo(.53, .2); g.lineTo(.53, .27); g.closePath(); P();
+      line([.38, .52, .62, .52], .025);
+      base(.58);
+    }
     g.restore();
   };
   const vis = i => st.flip ? 63 - i : i;
@@ -122,7 +170,7 @@ add("chess", "Xadrez", "chess", "Jogos para dois", b => {
   };
   const doMove = m => { const name = moveName(S0, m); hist.push(JSON.stringify(S0)); S0 = applyMove(S0, m); S0.moves = S0.moves.concat([name]); const key = S0.b.join("") + S0.turn; S0.reps = Object.assign({}, S0.reps, { [key]: (S0.reps[key] || 0) + 1 }); sel = null; targets = []; draw(); maybeAI(); };
   const maybeAI = () => { if (st.mode === "2p" || over()) return; const ai = st.flip ? "w" : "b"; if (S0.turn !== ai) return; thinking = true; draw();
-    setTimeout(() => { const m = bestMove(S0, st.mode === "facil" ? "facil" : "medio"); thinking = false; if (m) { if (m.promo) m.promo = "Q"; doMove(m); } else draw(); }, 60); };
+    setTimeout(() => { const m = bestMove(S0, st.mode); thinking = false; if (m) { if (m.promo) m.promo = "Q"; doMove(m); } else draw(); }, 60); };
   const tap = k => { if (thinking || over() || promoWait) return; const i = vis(k), me = S0.turn;
     if (st.mode !== "2p" && me === (st.flip ? "w" : "b")) return;
     if (sel !== null && targets.indexOf(i) >= 0) { const ms = legalMoves(S0).filter(m => m.f === sel && m.t === i);
@@ -132,7 +180,7 @@ add("chess", "Xadrez", "chess", "Jogos para dois", b => {
     else { sel = null; targets = []; draw(); } };
   onPointer(c, e => { const p = ptr(c, e); tap(Math.floor(p[1] / Z) * 8 + Math.floor(p[0] / Z)); });
   const newGame = () => { S0 = chessStart(); hist = []; sel = null; targets = []; promoWait = null; promoBox.replaceChildren(); draw(); maybeAI(); };
-  const drawTop = () => top.replaceChildren(segTabs([["2p", "2 jogadores"], ["facil", "Contra o PC: fácil"], ["medio", "Contra o PC: médio"]], st.mode, k => { st.mode = k; save(); drawTop(); newGame(); }));
+  const drawTop = () => top.replaceChildren(segTabs([["2p", "2 jogadores"], ["facil", "PC fácil"], ["medio", "PC médio"], ["dificil", "PC difícil"]], st.mode, k => { st.mode = k; save(); drawTop(); newGame(); }));
   c.className += " smooth"; b.append(top, msg, capB, c, capW, promoBox, h("div", { class: "row" },
     btn("Desfazer", () => { if (!hist.length || thinking) return; const n = st.mode === "2p" ? 1 : Math.min(2, hist.length); for (let k = 0; k < n - 1; k++) hist.pop(); S0 = JSON.parse(hist.pop()); sel = null; targets = []; promoWait = null; promoBox.replaceChildren(); draw(); }),
     btn("Virar tabuleiro", () => { st.flip = !st.flip; save(); sel = null; targets = []; draw(); maybeAI(); }),

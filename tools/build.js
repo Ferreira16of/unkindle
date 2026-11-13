@@ -2,7 +2,7 @@
 const fs = require("fs"), path = require("path");
 const babel = require("@babel/core"), esbuild = require("esbuild"), acorn = require("acorn");
 const root = path.join(__dirname, "..", "unkindle"), src = path.join(root, "src");
-const order = ["compat.js", "icons.js", "core.js", "home.js", "apps-lib.js", "apps-core.js", "apps-a.js", "apps-b.js", "web-lib.js", "web-a.js", "web-b.js", "games-a.js", "games-b.js", "games-2p.js", "apps-merged.js", "apps-better.js", "apps-more.js", "apps-social.js", "chess.js", "boot.js"];
+const order = ["compat.js", "icons.js", "core.js", "home.js", "apps-lib.js", "apps-core.js", "apps-a.js", "apps-b.js", "web-lib.js", "web-a.js", "web-b.js", "games-a.js", "games-b.js", "games-2p.js", "apps-merged.js", "apps-better.js", "apps-more.js", "apps-social.js", "chess.js", "games-pc.js", "boot.js"];
 let ok = true;
 
 /* ---- JavaScript ---- */

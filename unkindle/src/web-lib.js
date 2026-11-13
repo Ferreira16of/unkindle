@@ -11,7 +11,8 @@ function apiText(url, ms) {
 function para(t) { return h("p", {}, t); }
 function big(t) { return h("div", { "class": "big" }, t); }
 function note(t) { return h("p", { "class": "muted" }, t); }
-function openBtn(url, label) { return h("button", { onclick: function () { window.open(url, "_blank"); } }, label || "Abrir", " ", ic("ext", 16)); }
+function openInApp(url) { S.x.browserOpen = url; save(); openApp("browser"); }
+function openBtn(url, label) { return h("button", { onclick: function () { openInApp(url); } }, label || "Abrir", " ", ic("ext", 16)); }
 function imgEl(src, alt) { return h("img", { src: src, alt: alt || "", style: "display:block;margin:8px 0" }); }
 function kv(rows) {
   return h("table", { "class": "kv" }, rows.filter(function (r) { return r && r[1] != null && r[1] !== "" && r[1] !== "undefined"; }).map(function (r) { return h("tr", {}, h("td", {}, r[0]), h("td", {}, String(r[1]))); }));
@@ -20,7 +21,7 @@ function kv(rows) {
 function listOf(items) {
   if (!items.length) return note("Nada encontrado.");
   return h("ul", { "class": "list" }, items.map(function (it) {
-    return h("li", {}, h("span", {}, h("b", {}, it.t), it.s ? h("br") : null, it.s ? h("small", {}, it.s) : null), it.u ? h("button", { "aria-label": "Abrir", onclick: function () { window.open(it.u, "_blank"); } }, ic("ext", 18)) : null);
+    return h("li", {}, h("span", {}, h("b", {}, it.t), it.s ? h("br") : null, it.s ? h("small", {}, it.s) : null), it.u ? h("button", { "aria-label": "Abrir", onclick: function () { openInApp(it.u); } }, ic("ext", 18)) : null);
   }));
 }
 /* Lista com miniatura: [{t, s, img, extra}] */
