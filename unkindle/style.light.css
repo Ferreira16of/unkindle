@@ -584,3 +584,5 @@ html{scrollbar-width:thin;scrollbar-color:#9a9a9a transparent}
 ::-webkit-scrollbar-thumb:hover{background:#4a4a4a}
 ::-webkit-scrollbar-corner{background:transparent}
 #page ::-webkit-scrollbar-thumb,.chatbox::-webkit-scrollbar-thumb{border-color:#ffffff}
+
+canvas.smooth{image-rendering:auto}

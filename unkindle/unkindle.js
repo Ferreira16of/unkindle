@@ -10581,7 +10581,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     return best;
   }
   add("chess", "Xadrez", "chess", "Jogos para dois", function (b) {
-    var Z = 52,
+    var Z = 64,
       c = cv(8 * Z, 8 * Z),
       g = c.getContext("2d"),
       st = X("xadrez", {
@@ -10611,28 +10611,124 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       thinking = false,
       promoWait = null;
     var sprite = function sprite(key, x, y, white) {
-      var rows = CHP[key],
-        px = 4,
-        ox = x + (Z - 12 * px) / 2,
-        oy = y + (Z - 12 * px) / 2;
-      g.fillStyle = white ? "#000" : "#fff";
-      rows.forEach(function (r, j) {
-        var _loop11 = function _loop11(i) {
-          if (r[i] === "#") [[-1, 0], [1, 0], [0, -1], [0, 1]].forEach(function (_ref38) {
-            var _ref39 = _slicedToArray(_ref38, 2),
-              dx = _ref39[0],
-              dy = _ref39[1];
-            return g.fillRect(ox + (i + dx) * px, oy + (j + dy) * px, px, px);
-          });
-        };
-        for (var i = 0; i < 12; i++) {
-          _loop11(i);
-        }
-      });
-      g.fillStyle = white ? "#fff" : "#000";
-      rows.forEach(function (r, j) {
-        for (var i = 0; i < 12; i++) if (r[i] === "#") g.fillRect(ox + i * px, oy + j * px, px, px);
-      });
+      var fg = white ? "#fff" : "#000",
+        ln = "#000",
+        det = white ? "#000" : "#fff";
+      g.save();
+      g.translate(x, y);
+      g.scale(Z, Z);
+      g.lineJoin = "round";
+      g.lineCap = "round";
+      g.lineWidth = 2.6 / Z;
+      var poly = function poly(pts) {
+        g.beginPath();
+        g.moveTo(pts[0], pts[1]);
+        for (var i = 2; i < pts.length; i += 2) g.lineTo(pts[i], pts[i + 1]);
+        g.closePath();
+      };
+      var paint = function paint() {
+        g.fillStyle = fg;
+        g.fill();
+        g.strokeStyle = ln;
+        g.stroke();
+      };
+      var base = function base() {
+        poly([.24, .86, .76, .86, .74, .78, .26, .78]);
+        paint();
+      };
+      if (key === "P") {
+        g.beginPath();
+        g.moveTo(.36, .78);
+        g.quadraticCurveTo(.38, .56, .45, .48);
+        g.lineTo(.55, .48);
+        g.quadraticCurveTo(.62, .56, .64, .78);
+        g.closePath();
+        paint();
+        g.beginPath();
+        g.arc(.5, .35, .12, 0, Math.PI * 2);
+        paint();
+        base();
+      }
+      if (key === "R") {
+        poly([.33, .78, .35, .42, .65, .42, .67, .78]);
+        paint();
+        poly([.27, .42, .27, .22, .36, .22, .36, .29, .45, .29, .45, .22, .55, .22, .55, .29, .64, .29, .64, .22, .73, .22, .73, .42]);
+        paint();
+        base();
+        g.beginPath();
+        g.moveTo(.36, .5);
+        g.lineTo(.64, .5);
+        g.strokeStyle = det;
+        g.lineWidth = 1.6 / Z;
+        g.stroke();
+      }
+      if (key === "N") {
+        poly([.30, .78, .70, .78, .70, .62, .66, .44, .62, .3, .54, .2, .46, .16, .45, .23, .36, .27, .24, .42, .23, .5, .3, .55, .4, .48, .46, .5, .38, .64, .33, .72]);
+        paint();
+        base();
+        g.beginPath();
+        g.arc(.43, .32, .025, 0, Math.PI * 2);
+        g.fillStyle = det;
+        g.fill();
+        g.beginPath();
+        g.moveTo(.46, .2);
+        g.lineTo(.52, .13);
+        g.lineTo(.53, .22);
+        g.closePath();
+        g.fillStyle = fg;
+        g.fill();
+        g.strokeStyle = ln;
+        g.stroke();
+      }
+      if (key === "B") {
+        g.beginPath();
+        g.moveTo(.36, .74);
+        g.quadraticCurveTo(.3, .5, .5, .24);
+        g.quadraticCurveTo(.7, .5, .64, .74);
+        g.closePath();
+        paint();
+        poly([.33, .78, .67, .78, .64, .72, .36, .72]);
+        paint();
+        g.beginPath();
+        g.arc(.5, .19, .05, 0, Math.PI * 2);
+        paint();
+        g.beginPath();
+        g.moveTo(.47, .46);
+        g.lineTo(.57, .36);
+        g.strokeStyle = det;
+        g.lineWidth = 2 / Z;
+        g.stroke();
+        base();
+      }
+      if (key === "Q") {
+        poly([.34, .78, .38, .44, .62, .44, .66, .78]);
+        paint();
+        poly([.26, .26, .36, .44, .64, .44, .74, .26, .62, .36, .56, .2, .5, .34, .44, .2, .38, .36]);
+        paint();
+        [[.26, .24], [.44, .18], [.56, .18], [.74, .24]].forEach(function (_ref38) {
+          var _ref39 = _slicedToArray(_ref38, 2),
+            cx = _ref39[0],
+            cy = _ref39[1];
+          g.beginPath();
+          g.arc(cx, cy, .04, 0, Math.PI * 2);
+          paint();
+        });
+        base();
+      }
+      if (key === "K") {
+        poly([.34, .78, .37, .42, .63, .42, .66, .78]);
+        paint();
+        g.beginPath();
+        g.moveTo(.3, .42);
+        g.quadraticCurveTo(.3, .26, .5, .3);
+        g.quadraticCurveTo(.7, .26, .7, .42);
+        g.closePath();
+        paint();
+        poly([.46, .3, .46, .2, .41, .2, .41, .14, .46, .14, .46, .09, .54, .09, .54, .14, .59, .14, .59, .2, .54, .2, .54, .3]);
+        paint();
+        base();
+      }
+      g.restore();
     };
     var vis = function vis(i) {
       return st.flip ? 63 - i : i;
@@ -10651,7 +10747,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       return /mate|empate|Empate|Afogamento/.test(status());
     };
     var draw = function draw() {
-      var _loop12 = function _loop12() {
+      var _loop11 = function _loop11() {
         var i = vis(k),
           x = (k & 7) * Z,
           y = (k >> 3) * Z,
@@ -10686,28 +10782,31 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         }
         if (p !== ".") sprite(p.toUpperCase(), x, y, isW(p));
         if (targets.indexOf(i) >= 0) {
-          g.fillStyle = "#000";
+          g.beginPath();
           if (p !== ".") {
-            g.fillRect(x + 2, y + 2, 12, 4);
-            g.fillRect(x + 2, y + 2, 4, 12);
-            g.fillRect(x + Z - 14, y + Z - 6, 12, 4);
-            g.fillRect(x + Z - 6, y + Z - 14, 4, 12);
+            g.arc(x + Z / 2, y + Z / 2, Z * .46, 0, Math.PI * 2);
+            g.lineWidth = 4;
+            g.strokeStyle = "#000";
+            g.stroke();
           } else {
-            g.fillRect(x + Z / 2 - 7, y + Z / 2 - 7, 14, 14);
-            g.fillStyle = "#fff";
-            g.fillRect(x + Z / 2 - 4, y + Z / 2 - 4, 8, 8);
+            g.arc(x + Z / 2, y + Z / 2, Z * .13, 0, Math.PI * 2);
+            g.fillStyle = "#000";
+            g.fill();
+            g.lineWidth = 2;
+            g.strokeStyle = "#fff";
+            g.stroke();
           }
         }
       };
       for (var k = 0; k < 64; k++) {
-        _loop12();
+        _loop11();
       }
       g.fillStyle = "#000";
-      g.font = "10px Bookerly, Literata, Georgia, serif";
+      g.font = "12px Bookerly, Literata, Georgia, serif";
       for (var _k2 = 0; _k2 < 8; _k2++) {
         var f = st.flip ? 7 - _k2 : _k2;
-        g.fillText(FILES[f], _k2 * Z + Z - 9, 8 * Z - 3);
-        g.fillText(String(st.flip ? _k2 + 1 : 8 - _k2), 2, _k2 * Z + 11);
+        g.fillText(FILES[f], _k2 * Z + Z - 10, 8 * Z - 4);
+        g.fillText(String(st.flip ? _k2 + 1 : 8 - _k2), 3, _k2 * Z + 13);
       }
       g.strokeStyle = "#000";
       g.lineWidth = 2;
@@ -10830,6 +10929,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
         newGame();
       }));
     };
+    c.className += " smooth";
     b.append(top, msg, capB, c, capW, promoBox, h("div", {
       class: "row"
     }, btn("Desfazer", function () {
@@ -10853,7 +10953,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       class: "lbl2"
     }, "Lances"), list, h("p", {
       class: "muted"
-    }, "Toque numa peça: as casas possíveis ficam marcadas (quadradinho = andar, cantos = capturar). Contra o PC você joga com as brancas; use Virar tabuleiro para jogar com as pretas."));
+    }, "Toque numa peça: as casas possíveis ficam marcadas (bolinha = andar, anel = capturar). Contra o PC você joga com as brancas; use Virar tabuleiro para jogar com as pretas."));
     _drawTop();
     var sv = keepGet("chess2");
     if (sv && sv.S0 && sv.S0.b) {
