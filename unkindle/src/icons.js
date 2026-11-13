@@ -74,7 +74,7 @@ var ICONS = {
   chev: '<path d="m9 6 6 6-6 6"/>',
   rows: '<path d="M3 5h18M3 12h18M3 19h18"/>',
   bsky: '<path d="M12 11C10 7 6.5 4 3.5 4 2.5 4 2 4.7 2 6c0 2 1 5 3.5 6C3 13 2.5 15 4 16.5c2 2 5 .5 8-4.5 3 5 6 6.5 8 4.5 1.5-1.5 1-3.5-1.5-4.5C21 11 22 8 22 6c0-1.3-.5-2-1.5-2-3 0-6.5 3-8.5 7z"/>',
-  ball8: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="11" r="4.5"/><circle cx="12" cy="9.4" r="1.3"/><circle cx="12" cy="12.6" r="1.7"/>',
+  ball8: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="11.2" r="5.6"/><g stroke-width="1.4" stroke-linecap="round"><circle cx="12" cy="9.3" r="1.45"/><circle cx="12" cy="12.75" r="1.85"/></g>',
   snake: '<path d="M15 4h3a3 3 0 0 1 0 6H8a3 3 0 0 0 0 6h8a3 3 0 0 1 0 6H6"/><path d="M15 4h-2M6 22l-3-1.5M6 22l-3 1"/><circle cx="17.5" cy="6.5" r=".6"/>',
   dino: '<path d="M11 21v-4H9l-4-4V9l2 2h4V6a3 3 0 0 1 3-3h4a2 2 0 0 1 2 2v3h-5v2h3v1.5h-3V15l-2 2v4"/><path d="M15 21v-3M15 5.5h1"/>',
   target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
