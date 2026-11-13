@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /diag.html
+Disallow: /api/
+
+Sitemap: https://unkindle.vercel.app/sitemap.xml

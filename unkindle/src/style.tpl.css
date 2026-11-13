@@ -567,3 +567,10 @@ table.t2048 td,table.ul td,table.mem td,table.slp td{border-radius:12px;-webkit-
 @media print{#top,footer,button{display:none}}
 
 #btn-set{margin-right:4px}
+
+/* Sobre (rodapé) */
+.about{max-width:700px;margin:0 auto 14px;padding:0 4px;text-align:left;line-height:1.5}
+.about h2{font-size:1.15em;margin:4px 0 8px;color:{{FG}}}
+.about p{margin:0 0 8px;color:{{MUT}}}
+.about b{color:{{FG}}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}

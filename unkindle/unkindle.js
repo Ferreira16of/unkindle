@@ -962,6 +962,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     save();
     $("#app-title").replaceChildren(ic(a.i, 28), " " + a.n);
     favBtn();
+    try {
+      document.title = a.n + " · Unkindle";
+    } catch (e1) {}
     snapDrafts();
     var b = $("#app-body");
     if (b._cleanup) {
@@ -997,6 +1000,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
   function doCloseApp() {
     snapDrafts();
     draftApp = null;
+    try {
+      document.title = HOME_TITLE;
+    } catch (e1) {}
     var b = $("#app-body");
     if (b._cleanup) {
       try {
@@ -1112,7 +1118,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     }
   }
   window.addEventListener("hashchange", route, false);
-  var homeY = 0;
+  var homeY = 0,
+    HOME_TITLE = document.title;
   var IPSRC = [["https://ipwho.is/", function (j) {
     return j.success === false ? null : {
       lat: j.latitude,

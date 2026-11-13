@@ -203,6 +203,7 @@ function doOpenApp(id) {
   if (curView === "home") homeY = window.pageYOffset || document.documentElement.scrollTop || 0;
   S.recents = [id].concat(S.recents.filter(function (x) { return x !== id; })).slice(0, 6); save();
   $("#app-title").replaceChildren(ic(a.i, 28), " " + a.n); favBtn();
+  try { document.title = a.n + " · Unkindle"; } catch (e1) {}
   snapDrafts();
   var b = $("#app-body"); if (b._cleanup) { try { b._cleanup(); } catch (e0) {} } b.replaceChildren(); b._cleanup = null; b._sub = null;
   showView("app");
@@ -212,6 +213,7 @@ function favBtn() { $("#app-fav").replaceChildren(ic("star", 22, inList(S.favs, 
 function closeApp() { goHome(); }
 function doCloseApp() {
   snapDrafts(); draftApp = null;
+  try { document.title = HOME_TITLE; } catch (e1) {}
   var b = $("#app-body"); if (b._cleanup) { try { b._cleanup(); } catch (e) {} } b._cleanup = null; b._sub = null;
   showView("home"); renderHome();
   window.scrollTo(0, homeY);
@@ -254,7 +256,7 @@ function route() {
   } finally { inRoute = false; }
 }
 window.addEventListener("hashchange", route, false);
-var homeY = 0;
+var homeY = 0, HOME_TITLE = document.title;
 
 
 /* ---------- Widgets ---------- */
