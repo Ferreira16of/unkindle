@@ -278,11 +278,21 @@ function medoid(pts) {
   var cost = function (p) { return pts.reduce(function (s, q) { return s + Math.sqrt(Math.pow(p.lat - q.lat, 2) + Math.pow(p.lon - q.lon, 2)); }, 0); };
   return pts.reduce(function (a, b) { return cost(a) <= cost(b) ? a : b; });
 }
-function locate() {
-  ipLocations().then(function (pts) {
-    if (!pts.length) return weather(-23.55, -46.63, "São Paulo");
-    var b = medoid(pts); weather(b.lat, b.lon, b.city || "sua região");
+/* Onde mostrar o clima: 1) cidade escolhida pela pessoa (salva na conta), 2) última localização por IP (guardada 12 h), 3) IP agora */
+function homePlace() {
+  var c = S.settings.city; if (c && isFinite(c.lat)) return Promise.resolve({ lat: c.lat, lon: c.lon, name: c.name, fixed: true });
+  var cached = null; try { cached = JSON.parse(lsGet("unkindle.ipLoc") || "null"); } catch (e) {}
+  if (cached && Date.now() - cached.t < 12 * 36e5) return Promise.resolve(cached);
+  return ipLocations().then(function (pts) {
+    if (!pts.length) return cached || { lat: -23.55, lon: -46.63, name: "São Paulo" };
+    var b = medoid(pts), p = { lat: b.lat, lon: b.lon, name: b.city || "Sua região", t: Date.now() }; lsSet("unkindle.ipLoc", JSON.stringify(p)); return p;
   });
+}
+var wxTimer = null;
+function locate() {
+  try { var last = JSON.parse(lsGet("unkindle.wxLast") || "null"); if (last) showWx(last); } catch (e) {}
+  homePlace().then(function (p) { weather(p.lat, p.lon, p.name); });
+  clearInterval(wxTimer); wxTimer = setInterval(function () { homePlace().then(function (p) { weather(p.lat, p.lon, p.name); }); }, 30 * 60000);
 }
 
 /* ---------- Páginas (telas de ajuda, ajustes, conta) ---------- */

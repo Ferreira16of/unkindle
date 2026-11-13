@@ -119,13 +119,16 @@ function wxInfo(code, day) {
   if (code >= 95) return ["storm", "Trovoadas"];
   return ["cloud", ""];
 }
+function showWx(d) {
+  var w = wxInfo(d.code, d.day);
+  $("#wx-ic").replaceChildren(ic(w[0], 20));
+  $("#wx-temp").textContent = Math.round(d.temp) + "°";
+  $("#weather-line").textContent = "";
+  $("#wx-place").textContent = d.place ? " · " + String(d.place).split(",")[0] : "";
+}
 function weather(lat, lon, place) {
-  api("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&forecast_days=1&timezone=auto").then(function (j) {
-    var c = j.current, w = wxInfo(c.weather_code, c.is_day !== 0);
-    $("#wx-ic").replaceChildren(ic(w[0], 20));
-    $("#wx-temp").textContent = Math.round(c.temperature_2m) + "°";
-    var mx = j.daily && j.daily.temperature_2m_max ? " · " + Math.round(j.daily.temperature_2m_max[0]) + "° / " + Math.round(j.daily.temperature_2m_min[0]) + "°" : "";
-    $("#weather-line").textContent = "";
-    $("#wx-place").textContent = place ? " · " + place : "";
-  }, function () { $("#weather-line").textContent = "Clima indisponível"; });
+  api("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=temperature_2m,weather_code,is_day&timezone=auto").then(function (j) {
+    var d = { temp: j.current.temperature_2m, code: j.current.weather_code, day: j.current.is_day !== 0, place: place, t: Date.now() };
+    showWx(d); lsSet("unkindle.wxLast", JSON.stringify(d));
+  }, function () { if (!lsGet("unkindle.wxLast")) $("#weather-line").textContent = "Clima indisponível"; });
 }

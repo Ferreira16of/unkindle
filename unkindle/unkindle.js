@@ -1181,12 +1181,51 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       return cost(a) <= cost(b) ? a : b;
     });
   }
-  function locate() {
-    ipLocations().then(function (pts) {
-      if (!pts.length) return weather(-23.55, -46.63, "São Paulo");
-      var b = medoid(pts);
-      weather(b.lat, b.lon, b.city || "sua região");
+  function homePlace() {
+    var c = S.settings.city;
+    if (c && isFinite(c.lat)) return Promise.resolve({
+      lat: c.lat,
+      lon: c.lon,
+      name: c.name,
+      fixed: true
     });
+    var cached = null;
+    try {
+      cached = JSON.parse(lsGet("unkindle.ipLoc") || "null");
+    } catch (e) {}
+    if (cached && Date.now() - cached.t < 12 * 36e5) return Promise.resolve(cached);
+    return ipLocations().then(function (pts) {
+      if (!pts.length) return cached || {
+        lat: -23.55,
+        lon: -46.63,
+        name: "São Paulo"
+      };
+      var b = medoid(pts),
+        p = {
+          lat: b.lat,
+          lon: b.lon,
+          name: b.city || "Sua região",
+          t: Date.now()
+        };
+      lsSet("unkindle.ipLoc", JSON.stringify(p));
+      return p;
+    });
+  }
+  var wxTimer = null;
+  function locate() {
+    try {
+      var last = JSON.parse(lsGet("unkindle.wxLast") || "null");
+      if (last) showWx(last);
+    } catch (e) {}
+    homePlace().then(function (p) {
+      weather(p.lat, p.lon, p.name);
+    });
+    clearInterval(wxTimer);
+    wxTimer = setInterval(function () {
+      homePlace().then(function (p) {
+        weather(p.lat, p.lon, p.name);
+      });
+    }, 30 * 60000);
   }
   var pages = {},
     pagesRaw = {
@@ -1850,17 +1889,26 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     if (code >= 95) return ["storm", "Trovoadas"];
     return ["cloud", ""];
   }
+  function showWx(d) {
+    var w = wxInfo(d.code, d.day);
+    $("#wx-ic").replaceChildren(ic(w[0], 20));
+    $("#wx-temp").textContent = Math.round(d.temp) + "°";
+    $("#weather-line").textContent = "";
+    $("#wx-place").textContent = d.place ? " · " + String(d.place).split(",")[0] : "";
+  }
   function weather(lat, lon, place) {
-    api("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&forecast_days=1&timezone=auto").then(function (j) {
-      var c = j.current,
-        w = wxInfo(c.weather_code, c.is_day !== 0);
-      $("#wx-ic").replaceChildren(ic(w[0], 20));
-      $("#wx-temp").textContent = Math.round(c.temperature_2m) + "°";
-      var mx = j.daily && j.daily.temperature_2m_max ? " · " + Math.round(j.daily.temperature_2m_max[0]) + "° / " + Math.round(j.daily.temperature_2m_min[0]) + "°" : "";
-      $("#weather-line").textContent = "";
-      $("#wx-place").textContent = place ? " · " + place : "";
+    api("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=temperature_2m,weather_code,is_day&timezone=auto").then(function (j) {
+      var d = {
+        temp: j.current.temperature_2m,
+        code: j.current.weather_code,
+        day: j.current.is_day !== 0,
+        place: place,
+        t: Date.now()
+      };
+      showWx(d);
+      lsSet("unkindle.wxLast", JSON.stringify(d));
     }, function () {
-      $("#weather-line").textContent = "Clima indisponível";
+      if (!lsGet("unkindle.wxLast")) $("#weather-line").textContent = "Clima indisponível";
     });
   }
   ;
@@ -3466,33 +3514,36 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     }, "Traduzir para português");
     return h("div", {}, b, out);
   }
+  function geoList(q) {
+    return api("https://geocoding-api.open-meteo.com/v1/search?count=10&language=pt&name=" + encodeURIComponent(q)).then(function (j) {
+      var rs = (j.results || []).map(function (r) {
+        return {
+          lat: r.latitude,
+          lon: r.longitude,
+          name: r.name,
+          full: r.name + (r.admin1 ? ", " + r.admin1 : "") + (r.country ? " – " + r.country : ""),
+          br: r.country_code === "BR",
+          pop: r.population || 0
+        };
+      });
+      rs.sort(function (a, b) {
+        return b.br - a.br || b.pop - a.pop;
+      });
+      return rs;
+    });
+  }
   function geo(q) {
-    return api("https://geocoding-api.open-meteo.com/v1/search?count=1&language=pt&name=" + encodeURIComponent(q)).then(function (j) {
-      var r = j.results && j.results[0];
-      if (!r) throw new Error("Local não encontrado");
+    return geoList(q).then(function (rs) {
+      if (!rs.length) throw new Error("Local não encontrado");
       return {
-        lat: r.latitude,
-        lon: r.longitude,
-        name: r.name + (r.admin1 ? ", " + r.admin1 : "") + (r.country ? " – " + r.country : "")
+        lat: rs[0].lat,
+        lon: rs[0].lon,
+        name: rs[0].full
       };
     });
   }
-  var locCache = null;
   function myLoc() {
-    if (!locCache) locCache = ipLocations().then(function (p) {
-      if (!p.length) return {
-        lat: -23.55,
-        lon: -46.63,
-        name: "São Paulo"
-      };
-      var b = medoid(p);
-      return {
-        lat: b.lat,
-        lon: b.lon,
-        name: b.city || "Sua região"
-      };
-    });
-    return locCache;
+    return homePlace();
   }
   function place(v) {
     return v && v.q ? geo(v.q) : myLoc();
@@ -5504,17 +5555,57 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
   };
   var DSEM = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
   add("weather", "Clima", "cloud", "Mundo", function (b) {
-    var q = inp("Outra cidade", "search"),
-      out = h("div");
+    var q = inp("Buscar outra cidade", "search"),
+      out = h("div"),
+      bar = h("div", {
+        class: "wxbar"
+      }),
+      res = h("div");
+    var cur = null;
+    var _paintBar = function paintBar() {
+      var fixed = S.settings.city && cur && Math.abs(S.settings.city.lat - cur.lat) < .01 && Math.abs(S.settings.city.lon - cur.lon) < .01;
+      bar.replaceChildren(h("span", {}, ic("map", 16), " ", h("b", {}, cur ? cur.name : "…"), h("small", {}, fixed ? "  · sua cidade do topo" : cur && cur.auto ? "  · detectada pela sua internet" : "  · cidade pesquisada")), cur && !fixed ? btn("Usar no topo", function () {
+        S.settings.city = {
+          lat: cur.lat,
+          lon: cur.lon,
+          name: cur.name
+        };
+        save();
+        lsDel("unkindle.wxLast");
+        locate();
+        toast("Cidade do topo: " + cur.name);
+        _paintBar();
+      }, "sbtn") : null, S.settings.city ? btn("Detectar automático", function () {
+        delete S.settings.city;
+        save();
+        lsDel("unkindle.ipLoc");
+        lsDel("unkindle.wxLast");
+        locate();
+        out.replaceChildren(note("Localizando…"));
+        homePlace().then(function (p) {
+          return show(Object.assign({}, p, {
+            auto: true
+          }));
+        });
+      }, "sbtn") : null);
+    };
     var show = function show(p) {
+      cur = {
+        lat: p.lat,
+        lon: p.lon,
+        name: p.name,
+        auto: !!p.auto
+      };
+      _paintBar();
+      res.replaceChildren();
       out.replaceChildren(note("Carregando a previsão…"));
-      api("https://api.open-meteo.com/v1/forecast?latitude=" + p.lat + "&longitude=" + p.lon + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max&forecast_days=7&timezone=auto").then(function (j) {
+      api("https://api.open-meteo.com/v1/forecast?latitude=" + p.lat + "&longitude=" + p.lon + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max&forecast_days=7&timezone=auto").then(function (j) {
         var c = j.current,
           w = wxInfo(c.weather_code, c.is_day !== 0),
           hr = j.hourly,
           from = Math.max(0, hr.time.indexOf(c.time.slice(0, 13) + ":00"));
         var hrs = [];
-        for (var i = from; i < from + 12 && i < hr.time.length; i++) hrs.push(h("td", {}, h("small", {}, hr.time[i].slice(11, 13) + "h"), ic(wxInfo(hr.weather_code[i], true)[0], 16), h("b", {}, Math.round(hr.temperature_2m[i]) + "°"), h("small", {}, (hr.precipitation_probability[i] || 0) + "%")));
+        for (var i = from; i < from + 12 && i < hr.time.length; i++) hrs.push(h("td", {}, h("small", {}, hr.time[i].slice(11, 13) + "h"), ic(wxInfo(hr.weather_code[i], hr.is_day ? hr.is_day[i] !== 0 : true)[0], 16), h("b", {}, Math.round(hr.temperature_2m[i]) + "°"), h("small", {}, (hr.precipitation_probability[i] || 0) + "%")));
         var dy = j.daily;
         out.replaceChildren(h("div", {
           class: "wxnow"
@@ -5544,20 +5635,53 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       });
     };
     var go = function go() {
-      if (!q.value.trim()) return;
-      out.replaceChildren(note("Procurando a cidade…"));
-      geo(q.value.trim()).then(show, function (e) {
-        return out.replaceChildren(para(e.message === "Local não encontrado" ? "Cidade não encontrada." : NOCONN));
+      var v = q.value.trim();
+      if (!v) return;
+      res.replaceChildren(note("Procurando a cidade…"));
+      geoList(v).then(function (rs) {
+        if (!rs.length) return res.replaceChildren(para("Cidade não encontrada. Confira o nome."));
+        if (rs.length === 1) {
+          q.value = "";
+          return show({
+            lat: rs[0].lat,
+            lon: rs[0].lon,
+            name: rs[0].full
+          });
+        }
+        res.replaceChildren(h("div", {
+          class: "lbl2"
+        }, "Qual delas?"), h.apply(void 0, ["ul", {
+          class: "list"
+        }].concat(_toConsumableArray(rs.slice(0, 8).map(function (r) {
+          return h("li", {
+            class: "nw",
+            onclick: function onclick() {
+              q.value = "";
+              show({
+                lat: r.lat,
+                lon: r.lon,
+                name: r.full
+              });
+              window.scrollTo(0, 0);
+            }
+          }, h("span", {}, h("b", {}, r.name), h("small", {}, r.full.replace(r.name + ", ", "") + (r.pop ? " · " + num(r.pop) + " habitantes" : ""))));
+        })))));
+      }, function () {
+        return res.replaceChildren(para(NOCONN));
       });
     };
     q.addEventListener("keydown", function (e) {
       return e.key === "Enter" && go();
     });
-    b.append(h("div", {
+    b.append(bar, h("div", {
       class: "row"
-    }, q, btn("Ver", go, "solid")), out);
+    }, q, btn("Buscar", go, "solid")), res, out);
     out.replaceChildren(note("Localizando…"));
-    myLoc().then(show);
+    homePlace().then(function (p) {
+      return show(Object.assign({}, p, {
+        auto: !p.fixed
+      }));
+    });
   });
   ;
   function canvasBlob(c) {
@@ -11572,6 +11696,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     };
     $("#btn-set").onclick = function () {
       pages.settings();
+    };
+    $("#wx").onclick = function () {
+      openApp("weather");
     };
     $("#btn-find").onclick = function () {
       finding = !finding;

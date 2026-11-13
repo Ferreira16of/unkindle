@@ -47,17 +47,16 @@ function trBtn(text) {
 }
 
 /* Localização: onde você está (por IP) ou uma cidade digitada */
-function geo(q) {
-  return api("https://geocoding-api.open-meteo.com/v1/search?count=1&language=pt&name=" + encodeURIComponent(q)).then(function (j) {
-    var r = j.results && j.results[0]; if (!r) throw new Error("Local não encontrado");
-    return { lat: r.latitude, lon: r.longitude, name: r.name + (r.admin1 ? ", " + r.admin1 : "") + (r.country ? " – " + r.country : "") };
+/* Cidades com esse nome (as do Brasil primeiro) */
+function geoList(q) {
+  return api("https://geocoding-api.open-meteo.com/v1/search?count=10&language=pt&name=" + encodeURIComponent(q)).then(function (j) {
+    var rs = (j.results || []).map(function (r) { return { lat: r.latitude, lon: r.longitude, name: r.name, full: r.name + (r.admin1 ? ", " + r.admin1 : "") + (r.country ? " – " + r.country : ""), br: r.country_code === "BR", pop: r.population || 0 }; });
+    rs.sort(function (a, b) { return (b.br - a.br) || (b.pop - a.pop); });
+    return rs;
   });
 }
-var locCache = null;
-function myLoc() {
-  if (!locCache) locCache = ipLocations().then(function (p) { if (!p.length) return { lat: -23.55, lon: -46.63, name: "São Paulo" }; var b = medoid(p); return { lat: b.lat, lon: b.lon, name: b.city || "Sua região" }; });
-  return locCache;
-}
+function geo(q) { return geoList(q).then(function (rs) { if (!rs.length) throw new Error("Local não encontrado"); return { lat: rs[0].lat, lon: rs[0].lon, name: rs[0].full }; }); }
+function myLoc() { return homePlace(); }
 function place(v) { return v && v.q ? geo(v.q) : myLoc(); }
 var PLACE_IN = [{ k: "q", ph: "Cidade (vazio = onde você está)", def: "" }];
 

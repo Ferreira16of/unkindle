@@ -200,12 +200,20 @@ add("cep", "CEP", "map", "Brasil", b => {
 const uvTxt = v => v == null ? "" : Math.round(v) + " · " + (v < 3 ? "baixo" : v < 6 ? "moderado" : v < 8 ? "alto — use protetor" : v < 11 ? "muito alto — evite o sol do meio-dia" : "extremo — evite o sol");
 const DSEM = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 add("weather", "Clima", "cloud", "Mundo", b => {
-  const q = inp("Outra cidade", "search"), out = h("div");
+  const q = inp("Buscar outra cidade", "search"), out = h("div"), bar = h("div", { class: "wxbar" }), res = h("div");
+  let cur = null;
+  const paintBar = () => {
+    const fixed = S.settings.city && cur && Math.abs(S.settings.city.lat - cur.lat) < .01 && Math.abs(S.settings.city.lon - cur.lon) < .01;
+    bar.replaceChildren(h("span", {}, ic("map", 16), " ", h("b", {}, cur ? cur.name : "…"), h("small", {}, fixed ? "  · sua cidade do topo" : cur && cur.auto ? "  · detectada pela sua internet" : "  · cidade pesquisada")),
+      cur && !fixed ? btn("Usar no topo", () => { S.settings.city = { lat: cur.lat, lon: cur.lon, name: cur.name }; save(); lsDel("unkindle.wxLast"); locate(); toast("Cidade do topo: " + cur.name); paintBar(); }, "sbtn") : null,
+      S.settings.city ? btn("Detectar automático", () => { delete S.settings.city; save(); lsDel("unkindle.ipLoc"); lsDel("unkindle.wxLast"); locate(); out.replaceChildren(note("Localizando…")); homePlace().then(p => show(Object.assign({}, p, { auto: true }))); }, "sbtn") : null);
+  };
   const show = p => {
+    cur = { lat: p.lat, lon: p.lon, name: p.name, auto: !!p.auto }; paintBar(); res.replaceChildren();
     out.replaceChildren(note("Carregando a previsão…"));
-    api("https://api.open-meteo.com/v1/forecast?latitude=" + p.lat + "&longitude=" + p.lon + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max&forecast_days=7&timezone=auto").then(j => {
+    api("https://api.open-meteo.com/v1/forecast?latitude=" + p.lat + "&longitude=" + p.lon + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max&forecast_days=7&timezone=auto").then(j => {
       const c = j.current, w = wxInfo(c.weather_code, c.is_day !== 0), hr = j.hourly, from = Math.max(0, hr.time.indexOf(c.time.slice(0, 13) + ":00"));
-      const hrs = []; for (let i = from; i < from + 12 && i < hr.time.length; i++) hrs.push(h("td", {}, h("small", {}, hr.time[i].slice(11, 13) + "h"), ic(wxInfo(hr.weather_code[i], true)[0], 16), h("b", {}, Math.round(hr.temperature_2m[i]) + "°"), h("small", {}, (hr.precipitation_probability[i] || 0) + "%")));
+      const hrs = []; for (let i = from; i < from + 12 && i < hr.time.length; i++) hrs.push(h("td", {}, h("small", {}, hr.time[i].slice(11, 13) + "h"), ic(wxInfo(hr.weather_code[i], hr.is_day ? hr.is_day[i] !== 0 : true)[0], 16), h("b", {}, Math.round(hr.temperature_2m[i]) + "°"), h("small", {}, (hr.precipitation_probability[i] || 0) + "%")));
       const dy = j.daily;
       out.replaceChildren(
         h("div", { class: "wxnow" }, h("span", { class: "wxi" }, ic(w[0], 64)), h("span", {}, h("div", { class: "wxt2" }, Math.round(c.temperature_2m) + "°"), h("b", {}, w[1] || ""), h("small", {}, p.name))),
@@ -215,8 +223,11 @@ add("weather", "Clima", "cloud", "Mundo", b => {
         h("ul", { class: "list" }, ...dy.time.map((t, i) => { const dd = new Date(t + "T12:00"), wi = wxInfo(dy.weather_code[i], true); return h("li", {}, h("span", { class: "dd" }, i === 0 ? "Hoje" : DSEM[dd.getDay()] + " " + dd.getDate()), h("span", {}, ic(wi[0], 16), " " + (wi[1] || "") + (dy.precipitation_probability_max[i] ? " · " + dy.precipitation_probability_max[i] + "%" : "")), h("b", {}, Math.round(dy.temperature_2m_min[i]) + "° / " + Math.round(dy.temperature_2m_max[i]) + "°")); })));
     }, () => out.replaceChildren(para(NOCONN)));
   };
-  const go = () => { if (!q.value.trim()) return; out.replaceChildren(note("Procurando a cidade…")); geo(q.value.trim()).then(show, e => out.replaceChildren(para(e.message === "Local não encontrado" ? "Cidade não encontrada." : NOCONN))); };
+  const go = () => { const v = q.value.trim(); if (!v) return; res.replaceChildren(note("Procurando a cidade…"));
+    geoList(v).then(rs => { if (!rs.length) return res.replaceChildren(para("Cidade não encontrada. Confira o nome.")); if (rs.length === 1) { q.value = ""; return show({ lat: rs[0].lat, lon: rs[0].lon, name: rs[0].full }); }
+      res.replaceChildren(h("div", { class: "lbl2" }, "Qual delas?"), h("ul", { class: "list" }, ...rs.slice(0, 8).map(r => h("li", { class: "nw", onclick: () => { q.value = ""; show({ lat: r.lat, lon: r.lon, name: r.full }); window.scrollTo(0, 0); } }, h("span", {}, h("b", {}, r.name), h("small", {}, r.full.replace(r.name + ", ", "") + (r.pop ? " · " + num(r.pop) + " habitantes" : "")))))));
+    }, () => res.replaceChildren(para(NOCONN))); };
   q.addEventListener("keydown", e => e.key === "Enter" && go());
-  b.append(h("div", { class: "row" }, q, btn("Ver", go, "solid")), out);
-  out.replaceChildren(note("Localizando…")); myLoc().then(show);
+  b.append(bar, h("div", { class: "row" }, q, btn("Buscar", go, "solid")), res, out);
+  out.replaceChildren(note("Localizando…")); homePlace().then(p => show(Object.assign({}, p, { auto: !p.fixed })));
 });

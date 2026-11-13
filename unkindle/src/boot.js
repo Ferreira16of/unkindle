@@ -7,6 +7,7 @@ function boot() {
   $("#btn-signup").onclick = function () { pages.auth("up"); };
   $("#btn-login").onclick = function () { pages.auth("in"); };
   $("#btn-set").onclick = function () { pages.settings(); };
+  $("#wx").onclick = function () { openApp("weather"); };
   $("#btn-find").onclick = function () { finding = !finding; if (!finding) $("#search").value = ""; renderHome(); if (finding) $("#search").focus(); };
   $("#btn-view").onclick = function () { S.settings.view = isList() ? "grid" : "list"; save(); renderHome(); };
   $("#logo").onclick = function (e) { if (e.preventDefault) e.preventDefault(); goHome(); setTab("home"); return false; };

@@ -626,3 +626,9 @@ table.naval td.miss{color:{{MUT}}}
 .aibox{margin:6px 0 12px}
 .aisum{margin-top:8px}
 .aisum .bpage{padding:10px 14px;border-left:3px solid {{FG}}}
+
+/* Clima: cidade da previsão */
+#wx{cursor:pointer}
+.wxbar{margin:0 0 6px;padding:10px 12px;border:1px solid {{RULE}};border-radius:12px;-webkit-border-radius:12px;line-height:1.6}
+.wxbar small{color:{{MUT}};font-size:.8em}
+.wxbar .sbtn{margin:6px 8px 0 0}
