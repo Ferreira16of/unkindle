@@ -1,0 +1,23 @@
+# Render Blueprint: servidor do WhatsApp do Unkindle (pasta zap/), plano grátis.
+# As variáveis marcadas com sync: false você preenche no painel da Render (nunca no repositório).
+services:
+  - type: web
+    name: unkindle-zap
+    runtime: node
+    plan: free
+    rootDir: zap
+    buildCommand: npm ci
+    startCommand: node index.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: ZAP_SECRET
+        sync: false
+      - key: ZAP_ALLOWED_EMAILS
+        sync: false
+      - key: ZAP_PROXY_KEY
+        sync: false

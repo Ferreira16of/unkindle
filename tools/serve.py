@@ -138,6 +138,8 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         # /__fetch?url=...  busca uma página de notícia/artigo para o leitor do Unkindle (só http/https, sem endereços internos)
+        if self.path.startswith("/__zap?"):
+            return self.zap_proxy()
         if self.path.startswith("/__fetch?"):
             q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
             url = (q.get("url") or [""])[0]
@@ -175,7 +177,35 @@ class Handler(SimpleHTTPRequestHandler):
             return
         return super().do_GET()
 
+    def zap_proxy(self):
+        """/__zap?op=...  repassa para o servidor do WhatsApp (ZAP_URL, padrão http://localhost:3000)."""
+        q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+        op = (q.get("op") or [""])[0]
+        if op not in ("status", "link", "logout", "chats", "messages", "read", "send"):
+            self.send_error(404)
+            return
+        base = (os.environ.get("ZAP_URL") or "http://localhost:3000").rstrip("/")
+        url = base + "/" + op + ("?jid=" + urllib.parse.quote((q.get("jid") or [""])[0]) if q.get("jid") else "")
+        data = None
+        if self.command == "POST":
+            data = self.rfile.read(min(int(self.headers.get("Content-Length") or 0), 20000))
+        req = urllib.request.Request(url, data=data, method=self.command, headers={"Content-Type": "application/json", "Authorization": self.headers.get("Authorization") or "", "X-Zap-Key": os.environ.get("ZAP_PROXY_KEY", "")})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                code, body = r.status, r.read()
+        except urllib.error.HTTPError as e:
+            code, body = e.code, e.read()
+        except Exception:
+            code, body = 504, json.dumps({"error": "O servidor do WhatsApp não respondeu."}).encode()
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_POST(self):
+        if self.path.startswith("/__zap?"):
+            return self.zap_proxy()
         if self.path.split("?")[0] == "/__ai":
             n = min(int(self.headers.get("Content-Length") or 0), 200 * 1024)
             try:

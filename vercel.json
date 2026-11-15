@@ -17,6 +17,10 @@
     {
       "source": "/__ai",
       "destination": "/api/ai"
+    },
+    {
+      "source": "/__zap",
+      "destination": "/api/zap"
     }
   ],
   "headers": [
@@ -64,5 +68,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/zap.js": {
+      "maxDuration": 60
+    }
+  }
 }

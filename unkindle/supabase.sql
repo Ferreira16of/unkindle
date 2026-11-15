@@ -229,3 +229,14 @@ drop policy if exists "logado denuncia" on public.unkindle_reports;
 create policy "logado denuncia" on public.unkindle_reports for insert to authenticated with check (auth.uid() = user_id);
 -- só o próprio sistema mexe nos contadores: ninguém edita (update) diretamente
 revoke update on public.unkindle_topics, public.unkindle_posts, public.unkindle_chat, public.unkindle_polls from anon, authenticated;
+
+-- ============ WhatsApp (servidor Unkindle Zap na Render) ============
+-- Sessão do WhatsApp e últimas conversas, CRIPTOGRAFADAS pelo servidor (ZAP_SECRET).
+-- Sem nenhuma política: o site e os usuários não leem nem escrevem; só a chave secreta do servidor.
+create table if not exists public.unkindle_zap_kv (
+  k text primary key,
+  v text not null,
+  updated_at timestamptz not null default now()
+);
+alter table public.unkindle_zap_kv enable row level security;
+revoke all on public.unkindle_zap_kv from anon, authenticated;

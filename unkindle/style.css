@@ -666,3 +666,19 @@ table.naval td.miss{color:#b8b8b8}
   .at input,.at input:focus{padding-left:34px}
   .fld .lnk{min-height:0;margin-top:-2px;padding:0 2px}
 }
+
+/* WhatsApp */
+.zcode{margin:10px 0 14px;font-size:2.2em;font-weight:700;letter-spacing:4px}
+.zsteps{margin:0 0 12px;padding-left:22px;text-align:left;line-height:1.5}
+.zlist li{cursor:pointer}
+.zlist li>span>b{font-size:1em}
+.zlist li>span>small{display:block;color:#b8b8b8;font-size:.82em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:330px}
+.zg{font-style:normal;font-size:.75em;color:#b8b8b8}
+.zun{display:block;margin:4px 0 0 auto;width:26px;padding:1px 0;text-align:center;font-style:normal;font-size:.72em;font-weight:700;background:#ffffff;color:#000000;border-radius:12px;-webkit-border-radius:12px}
+.zname{margin:8px 0 6px;font-size:1.2em}
+.zmsgs{margin:4px 0 10px}
+.zm{margin:0 0 6px;padding:6px 10px;border:1px solid #6a6a6a;border-radius:12px;-webkit-border-radius:12px;max-width:86%}
+.zm.me{margin-left:14%;border-color:#ffffff;border-bottom-right-radius:4px}
+.zw{font-size:.72em;font-weight:700;color:#b8b8b8}
+.zt{white-space:pre-wrap;word-wrap:break-word;line-height:1.35}
+.zh{text-align:right;font-size:.68em;color:#b8b8b8}

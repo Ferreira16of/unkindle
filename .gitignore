@@ -6,3 +6,5 @@ tools/reports.log
 .DS_Store
 Thumbs.db
 .claude/
+zap/node_modules/
+zap/.env*
