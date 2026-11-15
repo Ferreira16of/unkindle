@@ -56,6 +56,9 @@ com limite de 30 pedidos a cada 10 minutos por pessoa.
 
 ## WhatsApp (servidor na Render)
 
+> **Desativado por enquanto.** O app não aparece no site (`ZAP_ON = false` em `unkindle/src/apps-zap.js`) e a ponte
+> `/__zap` responde 404. Para ligar: mude para `true`, rode o build e coloque `ZAP_ENABLED=1` na Vercel.
+
 O app **WhatsApp** conecta a sua conta como "aparelho conectado" (igual ao WhatsApp Web) através de um servidor
 próprio na pasta `zap/`. Ele usa a biblioteca não oficial Baileys: **use só com a sua conta e sem disparar mensagens em massa**,
 porque o WhatsApp pode banir números que parecem robôs. O servidor limita o envio a 12 mensagens por minuto.

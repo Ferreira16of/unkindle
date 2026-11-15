@@ -6,6 +6,8 @@ export const config = { maxDuration: 60 };
 
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
+  // Desativado por enquanto: só funciona com ZAP_ENABLED=1 nas variáveis da Vercel
+  if (process.env.ZAP_ENABLED !== "1") return res.status(404).json({ error: "Não encontrado." });
   const base = String(process.env.ZAP_URL || "").replace(/\/+$/, "");
   if (!base) return res.status(503).json({ error: "O WhatsApp ainda não foi configurado (falta ZAP_URL na Vercel)." });
   const op = String(req.query.op || "");

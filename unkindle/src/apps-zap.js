@@ -25,7 +25,9 @@ function zapWhen(t) {
   return pad2(d.getDate()) + "/" + pad2(d.getMonth() + 1);
 }
 
-add("zap", "WhatsApp", "zap", "Essenciais", b => {
+/* DESATIVADO por enquanto: mude para true para o app aparecer no site (e ligue ZAP_ENABLED=1 na Vercel). */
+const ZAP_ON = false;
+(ZAP_ON ? add : function () {})("zap", "WhatsApp", "zap", "Essenciais", b => {
   const top = h("div"), body = h("div"); let timer = null, inChat = null;
   b.append(top, body);
   onClose(b, () => clearInterval(timer));

@@ -11707,7 +11707,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     if (d.toDateString() === y.toDateString()) return "ontem";
     return pad2(d.getDate()) + "/" + pad2(d.getMonth() + 1);
   }
-  add("zap", "WhatsApp", "zap", "Essenciais", function (b) {
+  var ZAP_ON = false;
+  (ZAP_ON ? add : function () {})("zap", "WhatsApp", "zap", "Essenciais", function (b) {
     var top = h("div"),
       body = h("div");
     var timer = null,
